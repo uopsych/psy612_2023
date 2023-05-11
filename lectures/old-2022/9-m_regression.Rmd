@@ -1,0 +1,363 @@
+---
+title: 'Lecture 9: Multiple Regression II'
+output:
+  xaringan::moon_reader:
+    lib_dir: libs
+    css: [default, rladies, rladies-fonts, "my-theme.css"]
+    incremental: true
+    nature:
+      highlightStyle: github
+      highlightLines: true
+      countIncrementalSlides: false
+---
+
+```{r, echo = F, warning = F, message = F}
+library(tidyverse)
+library(knitr)
+# function to display only part of the output
+hook_output <- knit_hooks$get("output")
+knit_hooks$set(output = function(x, options) {
+  lines <- options$output.lines
+  if (is.null(lines)) {
+    return(hook_output(x, options))  # pass to default hook
+  }
+  x <- unlist(strsplit(x, "\n"))
+  more <- "..."
+  if (length(lines)==1) {        # first n lines
+    if (length(x) > lines) {
+      # truncate the output, but add ....
+      x <- c(head(x, lines), more)
+    }
+  } else {
+    x <- c(more, x[lines], more)
+  }
+  # paste these lines together
+  x <- paste(c(x, ""), collapse = "\n")
+  hook_output(x, options)
+})
+
+knitr::opts_chunk$set(message = FALSE) # suppress messages
+
+```
+
+## Some clarifications after HW1
+
+* one- vs two-tailed tests
+
+* standard error of the estimate $(s_{Y|X})$ should be compared to original $s_Y$
+
+* Markdown formatting -- do not add `#` outside of code chunks
+
+
+---
+## Last time
+
+* Introduction to multiple regression
+* Interpreting coefficient estimates
+* Estimating model fit
+* Significance tests (omnibus and coefficients)
+
+
+---
+
+## Today
+
+* Tolerance
+* Hierarchical regression/model comparison
+
+* A note about the schedule
+
+---
+
+## Example from Thursday
+
+```{r}
+library(here); library(tidyverse)
+support_df = read.csv(here("data/support.csv")) 
+psych::describe(support_df, fast = T)
+```
+
+---
+
+```{r}
+mr.model <- lm(relationship ~ receive_support + give_support, data = support_df)
+summary(mr.model)
+```
+
+
+---
+
+## Standard error of regression coefficient
+
+In the case of univariate regression:
+
+$$\Large se_{b} = \frac{s_{Y}}{s_{X}}{\sqrt{\frac {1-r_{xy}^2}{n-2}}}$$
+
+In the case of multiple regression:
+
+$$\Large se_{b} = \frac{s_{Y}}{s_{X}}{\sqrt{\frac {1-R_{Y\hat{Y}}^2}{n-p-1}}} \sqrt{\frac {1}{1-R_{i.jkl...p}^2}}$$
+
+- As N increases... 
+- As variance explained increases... 
+
+---
+
+$$se_{b} = \frac{s_{Y}}{s_{X}}{\sqrt{\frac {1-R_{Y\hat{Y}}^2}{n-p-1}}} \sqrt{\frac {1}{1-R_{i.jkl...p}^2}}$$
+
+## Tolerance
+
+$$1-R_{i.jkl...p}^2$$
+
+- Proportion of $X_i$ that does not overlap with other predictors.
+    - Bounded by 0 and 1
+
+- Large tolerance (little overlap) means standard error will be small.   
+
+- what does this mean for including a lot of variables in your model? 
+
+---
+
+## Tolerance in `R`
+
+```{r}
+library(olsrr)
+
+ols_vif_tol(mr.model)
+```
+
+Why are tolerance values identical here?
+
+---
+
+## Suppression
+
+Normally our standardized partial regression coefficients fall between 0 and $r_{Y1}$. However, it is possible for $b^*_{Y1}$ to be larger than $r_{Y1}$. We refer to this phenomenon as .purple[suppression.]
+
+* A non-significant $r_{Y1}$ can become a significant $b^*_{Y1}$ when additional variables are added to the model.
+
+* A *positive* $r_{Y1}$ can become a *negative* and significant $b^*_{Y1}$.
+
+---
+
+```{r}
+stress_df = read.csv(here("data/stress.csv")) %>% dplyr::select(-id, -group)
+
+cor(stress_df) %>% round(2)
+```
+
+---
+
+```{r}
+lm(Stress ~ Anxiety, data = stress_df) %>% summary
+```
+
+---
+
+```{r}
+lm(Stress ~ Anxiety + Support, data = stress_df) %>% summary
+```
+
+---
+
+## Suppression
+
+Recall that the partial regression coefficient is calculated:
+
+$$\large b^*_{Y1.2}=\frac{r_{Y1}-r_{Y2}r_{12}}{1-r^2_{12}}$$
+
+
+--
+
+Is suppression meaningful? 
+???
+
+Imagine a scenario when X2 and Y are uncorrelated and X2 is correlated with X1.
+
+(Draw Venn diagram of this)
+
+Second part of numerator becomes 0
+Bottom part gets smaller
+Bigger value
+
+---
+
+## Hierarchical regression/Model comparison
+
+```{r, message=FALSE}
+library(tidyverse)
+happy_d <- read_csv('http://static.lib.virginia.edu/statlab/materials/data/hierarchicalRegressionData.csv')
+happy_d$gender = ifelse(happy_d$gender == "Female", 1, 0)
+library(psych)
+describe(happy_d, fast = T)
+```
+
+---
+
+```{r, output.lines = c(9:19)}
+mr.model <- lm(happiness ~ age + gender + friends + pets, data = happy_d)
+summary(mr.model)
+```
+
+???
+
+Review here:
+* Omnibus test
+* Coefficient of determination
+* Adjust R squared
+* Resid standard error
+* Coefficient estimates
+
+
+
+
+---
+
+## Methods for entering variables
+
+**Simultaneous**: Enter all of your IV's in a single model.
+$$\large Y = b_0 + b_1X_1 + b_2X_2 + b_3X_3$$
+  - The benefits to using this method is that it reduces researcher degrees of freedom, is a more conservative test of any one coefficient, and often the most defensible action (unless you have specific theory guiding a hierarchical approach).
+
+---
+
+## Methods for entering variables
+
+**Hierarchically**: Build a sequence of models in which every successive model includes one more (or one fewer) IV than the previous.
+$$\large Y = b_0 + e$$
+$$\large Y = b_0 + b_1X_1 + e$$
+$$\large Y = b_0 + b_1X_1 + b_2X_2 + e$$
+$$\large Y = b_0 + b_1X_1 + b_2X_2 + b_3X_3 + e$$
+
+This is known as **hierarchical regression**. (Note that this is different from Hierarchical Linear Modelling or HLM [which is often called Multilevel Modeling or MLM].) Hierarchical regression is a subset of **model comparison** techniques. 
+
+---
+
+## Hierarchical regression / Model Comparison  
+
+**Model comparison:** Comparing how well two (or more) models fit the data in order to determine which model is better.
+
+If we're comparing nested models by incrementally adding or subtracting variables, this is known as hierarchical regression. 
+
+  - Multiple models are calculated  
+    
+  - Each predictor (or set of predictors) is assessed in terms of what it adds (in terms of variance explained) at the time it is entered   
+    
+  - Order is dependent on an _a priori_ hypothesis  
+
+
+---
+
+![](images/venn/Slide9.jpeg)
+
+---
+## R-square change
+- distributed as an F
+$$F(p.new, N - 1 - p.all) = \frac {R_{m.2}^2- R_{m.1}^2} {1-R_{m.2}^2} (\frac {N-1-p.all}{p.new})$$
+- can also be written in terms of SSresiduals
+
+
+---
+
+## Model comparison
+
+- The basic idea is asking how much variance remains unexplained in our model. This "left over" variance can be contrasted with an alternative model/hypothesis. We can ask does adding a new predictor variable help explain more variance or should we stick with a parsimonious model.   
+
+- Every test of an omnibus model is implicitly a model comparisons, typically of your fitted model with the nil model (no slopes). This framework allows you to be more flexible and explicit.   
+
+---
+
+```{r}
+fit.0 <- lm(happiness ~ 1,
+            data = happy_d)
+
+summary(fit.0)
+```
+
+---
+```{r}
+fit.1 <- lm(happiness ~ age,
+            data = happy_d)
+summary(fit.1)
+```
+
+
+---
+```{r}
+anova(fit.0)
+```
+
+```{r}
+anova(fit.1)
+```
+
+```{r}
+anova(fit.1, fit.0)
+```
+
+---
+## Model Comparisons 
+
+- This example of model comparisons is redundant with nil/null hypotheses and coefficient tests of slopes in univariate regression. 
+
+- Let's expand this to the multiple regression case model.
+
+---
+
+## Model comparisons
+
+```{r, output.lines = c(1:9)}
+m.2 <- lm(happiness ~ age + gender, data = happy_d)
+m.3 <- lm(happiness ~ age + gender + pets, data = happy_d)
+m.4 <- lm(happiness ~ age + gender + friends + pets, data = happy_d)
+anova(m.2, m.3, m.4)
+```
+
+```{r}
+coef(summary(m.4))
+```
+
+---
+### change in $R^2$
+```{r}
+summary(m.2)$r.squared
+summary(m.3)$r.squared
+summary(m.4)$r.squared
+```
+
+---
+
+## partitioning the variance
+
+- It doesn't make sense to ask how much variance a variable explains (unless you qualify the association)
+
+$$R_{Y.1234...p}^2 = r_{Y1}^2 + r_{Y(2.1)}^2 + r_{Y(3.21)}^2 + r_{Y(4.321)}^2 + ...$$
+
+- In other words: order matters! 
+
+---
+What if we compare the first (2 predictors) and last model (4 predictors)?
+
+```{r}
+anova(m.2, m.4)
+```
+
+---
+
+Model comparison can thus be very useful for testing the explained variance attributable to a .purple[set] of predictors, not just one. 
+
+For example, if we're interested in explaining variance in cognitive decline, perhaps we build a model comparison testing:
+
+* Set 1: Demographic variables (age, gender, education, income)
+* Set 2: Physical health (exercise, chronic illness, smoking, flossing)
+* Set 3: Social factors (relationship quality, social network size)
+
+---
+
+class: inverse
+
+## Next time...
+
+Categorical predictors, AKA Analysis of Variance (ANOVA)
+
+
+

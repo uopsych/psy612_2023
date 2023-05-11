@@ -1,0 +1,456 @@
+---
+title: 'Review and Machine Learning'
+output:
+  xaringan::moon_reader:
+    lib_dir: libs
+    css: [default, rladies, rladies-fonts, "my-theme.css"]
+    incremental: true
+    nature:
+      highlightStyle: github
+      highlightLines: true
+      countIncrementalSlides: false
+---
+
+```{r, echo = F, message = F, warning = F}
+library(tidyverse)
+library(sjPlot)
+```
+
+
+#Last time...
+
+* Polynomials
+* Bootstrapping
+
+# Today
+
+* Review
+* Lessons from machine learning
+
+---
+
+### Data
+
+Examples today are based on data from the [2015 World Happiness Report](https://worldhappiness.report/ed/2015/), which is an annual survey part of the [Gallup World Poll](https://www.gallup.com/178667/gallup-world-poll-work.aspx). 
+
+```{r}
+library(tidyverse)
+
+data = read.csv("https://raw.githubusercontent.com/uopsych/psy612/master/data/world_happiness_2015.csv")
+glimpse(data)
+```
+
+---
+
+### Data
+```{r}
+data = data %>% 
+  mutate(
+    World_simple = case_when(
+      World %in% c(1,2) ~ "1/2",
+      World %in% c(3,4) ~ "3/4"),
+    World = as.factor(World))
+glimpse(data)
+```
+
+---
+
+## Concept 1: Interpreting the output of linear models.
+
+```{r fit_models, results='hide', eval = F}
+mod1 = lm(Happiness ~ Life, data = data)
+mod2 = lm(Happiness ~ Life + GDP, data = data)
+mod3 = lm(Happiness ~ Life*GDP, data = data)
+mod4 = lm(Happiness ~ Life + World_simple, data = data)
+mod5 = lm(Happiness ~ Life*World_simple, data = data)
+
+library(sjPlot)
+tab_model(mod1, mod2, mod3, mod4, mod5, 
+          show.p = F, 
+          show.ci = F, 
+          p.style = "stars", 
+          dv.labels = paste0("mod", 1:5))
+```
+
+---
+
+```{r ref.label="fit_models", echo = F, results = 'asis'}
+
+```
+
+---
+
+### One continuous predictor
+
+```{r, echo = F}
+data %>% lm(Happiness ~ Life, data = .) %>% 
+  plot_model(type = "pred", terms = c("Life"), show.data = T)
+```
+
+
+---
+
+### Two continuous predictors
+
+```{r, echo = F}
+data %>% lm(Happiness ~ Life + GDP, data = .) %>% 
+  plot_model(type = "pred", terms = c("Life", "GDP"))
+```
+
+
+---
+
+### Two continuous predictors + interaction
+
+```{r, echo = F}
+data %>% lm(Happiness ~ Life*GDP, data = .) %>% 
+  plot_model(type = "pred", terms = c("Life", "GDP"))
+```
+
+---
+
+```{r}
+library(emmeans)
+data %>% lm(Happiness ~ Life*GDP, data = .) %>% 
+  emtrends(., var = "Life", ~GDP, at = list(GDP = c(8,9,10)))
+```
+
+
+---
+
+### One categorical predictor
+
+```{r}
+data %>% lm(Happiness ~ World, data = .) %>% summary
+```
+---
+
+
+```{r, echo = F}
+data %>% lm(Happiness ~ World, data = .) %>% 
+  plot_model(type = "pred", terms = c("World"))
+```
+
+---
+
+```{r}
+data %>% lm(Happiness ~ World, data = .) %>%
+  emmeans(~World)
+data %>% lm(Happiness ~ World, data = .) %>% summary %>%  coef
+```
+
+---
+
+```{r}
+data %>% lm(Happiness ~ World, data = .) %>%
+  emmeans(pairwise~World, adjust = "none")
+```
+
+---
+
+### One categorical predictor
+
+```{r}
+data %>% lm(Happiness ~ World, data = .) %>% anova
+```
+---
+
+### Two categorical predictors + interaction
+
+```{r}
+data %>% lm(Happiness ~ World_simple*Hemisphere, data = .) %>% summary
+```
+---
+
+
+```{r, echo = F}
+data %>% lm(Happiness ~ World_simple*Hemisphere, data = .) %>% 
+  plot_model(type = "pred", terms = c("World_simple", "Hemisphere"))
+```
+
+---
+
+```{r}
+data %>% lm(Happiness ~ World_simple*Hemisphere, data = .) %>%
+  emmeans(~World_simple)
+```
+
+
+---
+
+```{r}
+data %>% lm(Happiness ~ World_simple*Hemisphere, data = .) %>%
+  emmeans(~World_simple*Hemisphere)
+```
+
+---
+
+### Two categorical predictors + interaction
+
+```{r}
+data %>% lm(Happiness ~ World_simple*Hemisphere, data = .) %>% anova
+```
+
+--
+
+```{r}
+table(data$World_simple, data$Hemisphere)
+```
+
+---
+
+### Two categorical predictors + interaction
+
+```{r}
+data %>% lm(Happiness ~ World_simple*Hemisphere, data = .) %>% 
+  car::Anova(Type = 2)
+```
+
+---
+
+### Mixing categorical and continuous predictors
+
+```{r}
+data %>% lm(Happiness ~ World + Life, data = .) %>% summary
+```
+---
+
+
+```{r, echo = F}
+data %>% lm(Happiness ~ World + Life, data = .) %>% 
+  plot_model(type = "pred", terms = c("Life", "World"))
+```
+
+---
+
+```{r}
+data %>% lm(Happiness ~ World + Life, data = .) %>% 
+  emtrends(var = "Life", ~"World")
+```
+
+---
+
+### Mixing categorical and continuous predictors
+
+```{r}
+data %>% lm(Happiness ~ World*Life, data = .) %>% summary
+```
+---
+
+
+```{r, echo = F}
+data %>% lm(Happiness ~ World*Life, data = .) %>% 
+  plot_model(type = "pred", terms = c("Life", "World"))
+```
+---
+
+```{r}
+data %>% lm(Happiness ~ World*Life, data = .) %>% 
+  emtrends(var = "Life", ~"World")
+```
+
+---
+
+## Concept 2: Suppression
+
+.purple[Suppression] occurs when the inclusion of a covariate (X2) enhances or reverses the relationship between a predictor (X1) and outcome (Y).
+
+Example 1: 
+
+$\hat{Y}_i = 5 + .3X1_i$
+
+$\hat{Y}_i = 3 + .7X1_i + .3X2_i$
+
+Example 2: 
+
+$\hat{Y}_i = 5 + .3X1_i$
+
+$\hat{Y}_i = 3 -.4X1_i + .3X2_i$
+
+---
+
+## Suppression
+
+Why does this occur? A few reasons, but the common thread to all of these is that X1 and X2 will be correlated. 
+
+Suppression can be "real" -- for example, the relation between mathematical ability and outcomes is often enhanced after controlling for verbal ability. 
+
+But suppression can be an artifact -- this is most often the case when X2 _overcontrols_ X1.
+
+What to do? Check your theory and see if the finding replicates in a new sample.
+
+---
+
+## Concept 3: Endogeneity
+
+Endogeneity refers to a situation in which a predictor (X1) is associated with an error term (e).
+
+```{r, echo = F, fig.height = 5}
+set.seed(031022)
+x = rnorm(50)
+y = x + x^2 + rnorm(50)
+lm(y ~ x) %>% 
+  broom::augment() %>% 
+  ggplot(aes(x, .resid)) +
+  geom_point() 
+```
+
+---
+
+## Concept 3: Endogeneity
+
+Endogeneity refers to a situation in which a predictor (X1) is associated with an error term (e).
+
+```{r, echo = F, fig.height = 5, warning = F, message = F}
+set.seed(031022)
+x = rnorm(50)
+y = x + x^2 + rnorm(50)
+lm(y ~ x) %>% 
+  broom::augment() %>% 
+  ggplot(aes(x, .resid)) +
+  geom_point() +
+  geom_smooth(se = F)
+```
+
+---
+class: inverse
+
+## Lessons from machine learning
+
+Yarkoni and Westfall (2017) describe the goals of explanation and prediction in science.
+  - Explanation: describe causal underpinnings of behaviors/outcomes
+  - Prediction: accurately forecast behaviors/outcomes
+
+In some ways, these goals work in tandem. Good prediction can help us develop theory of explanation and vice versa. But, statistically speaking, they are in tension with one another: statistical models that accurately describe causal truths often have poor prediction and are complex; predictive models are often very different from the data-generating processes. 
+
+???
+
+Y&W: we should spend more time and resources developing predictive models than we do not (not necessarily than explanation models, although they probably think that's true)
+
+---
+
+## Yarkoni and Westfall (2017)
+
+.pull-left[
+.purple[Overfitting:] mistakenly fitting sample-specific noise as if it were signal
+  - OLS models tend to be overfit because they minimize error for a specific sample
+
+.purple[Bias:] systematically over or under estimating parameters
+.purple[Variance:] how much estimates tend to jump around]
+
+.pull-right[
+
+![](images/bias-variance.png)
+]
+
+
+---
+
+## Yarkoni and Westfall (2017)
+
+
+**Big Data**
+* Reduce the likelihood of overfitting -- more data means less error
+
+**Cross-validation**
+* Is my model overfit?
+
+**Regularization**
+* Constrain the model to be less overfit (and more biased)
+
+---
+
+### Big Data Sets
+
+"Every pattern that could be observed in a given dataset reflects some... unknown combination of signal and error" (page 1104). 
+
+Error is random, so it cannot correlate with anything; as we aggregate many pieces of information together, we reduce error. 
+
+Thus, as we get bigger and bigger datasets, the amount of error we have gets smaller and smaller
+
+---
+
+### Cross-validation
+
+**Cross-validation** is a family of techniques that involve testing and training a model on different samples of data. 
+* Replication
+* Hold-out samples
+* K-fold
+    * Split the original dataset into 2(+) datasets, train a model on one set, test it in the other
+    * Recycle: each dataset can be a training AND a testing; average model fit results to get better estimate of fit
+    * Can split the dataset into more than 2 sections
+    
+---
+
+```{r, message=FALSE, warning = F}
+library(here)
+stress.data = read.csv(here("data/stress.csv"))
+library(psych)
+describe(stress.data, fast = T)
+
+model.lm = lm(Stress ~ Anxiety*Support*group, 
+              data = stress.data)
+summary(model.lm)$r.squared
+```
+
+---
+
+### Example: 10-fold cross validation
+
+```{r, message = F}
+# new package!
+library(caret)
+# set control parameters
+ctrl <- trainControl(method="cv", number=10)
+# use train() instead of lm()
+cv.model <- train(Stress ~ Anxiety*Support*group, 
+               data = stress.data, 
+               trControl=ctrl, # what are the control parameters
+               method="lm") # what kind of model
+cv.model
+```
+
+---
+
+### Regularization
+
+Penalizing a model as it grows more complex. 
+* Usually involves shrinking coefficient estimates -- the model will fit less well in-sample but may be more predictive
+
+*lasso regression*: balance minimizing sum of squared residuals (OLS) and minimizing smallest sum of absolute values of coefficients
+
+- coefficients are more biased (tend to underestimate coefficients) but produce less variability in results
+
+[See here for a tutorial](https://www.statology.org/lasso-regression-in-r/).
+
+---
+### NHST no more
+
+Once you've imposed a shrinkage penalty on your coefficients, you've wandered far from the realm of null hypothesis significance testing. In general, you'll find that very few machine learning techniques are compatible with probability theory (including Bayesian), because they're focused on different goals. Instead of asking, "how does random chance factor into my result?", machine learning optimizes (out of sample) prediction. Both methods explicitly deal with random variability. In NHST and Bayesian probability, we're trying to estimate the degree of randomness; in machine learning, we're trying to remove it. 
+
+---
+
+## Summary: Yarkoni and Westfall (2017)
+
+
+**Big Data**
+* Reduce the likelihood of overfitting -- more data means less error
+
+**Cross-validation**
+* Is my model overfit?
+
+**Regularization**
+* Constrain the model to be less overfit 
+
+---
+
+class: inverse
+
+## Next time...
+
+PSY 613 with Elliot Berkman!
+
+.small[(But first take the final quiz.)]
+
+
+
