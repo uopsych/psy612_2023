@@ -1,0 +1,159 @@
+---
+title: 'PSY 612 Homework #3'
+author: "YOUR NAME HERE"
+output:
+  html_document:
+    toc: yes
+  pdf_document:
+    toc: yes
+---
+
+```{r, include = F}
+knitr::opts_chunk$set(message = F, warning = F)
+library(tidyverse)
+```
+
+
+# Instructions
+
+Please complete this assignment using the RMarkdown file provided. Once you download the RMarkdown file please (1) include your name in the preamble, (2) rename the file to include your last name (e.g., "weston-homework-3.Rmd"). When you turn in the assignment, include both the .Rmd and knitted .html files.  
+
+To receive full credit on this homework assignment, you must earn **30 points**. You may notice that the total number of points available to earn on this assignment is 65 -- this means you do not have to answer all of the questions. You may choose which questions to answer. You cannot earn more than 30 points, but it may be worth attempting many questions for learning's sake. Here are a couple things to keep in mind:
+
+1. Points are all-or-nothing, meaning you cannot receive partial credit if you correctly answer only some of the bullet points for a question. All must be answered correctly.
+
+2. After the homework has been graded, you may retry questions to earn full credit, but you may only retry the questions you attempted on the first round. 
+
+3. The first time you complete this assignment, it must be turned in by 9am on the due date. Late assignments will receive 50% of the points earned. For example, if you correctly answer questions totaling 27 points, the assignment will receive 13.5 points. If you resubmit this assignment with corrected answers (a total of 30 points), the assignment will receive 15 points.
+
+4. You may discuss homework assignments with your classmates; however, it is important that you complete each assignment on your own and do not simply copy someone else’s code. If we believe one student has copied another’s work, both students will receive a 0 on the homework assignment and will not be allowed to resubmit the assignment for points.
+
+**Data:** 
+
+-`homework-happy`: The dataset looks at happiness in college as a relationship with school success, friendship quality, socioeconomic status, and an intervention group (1 = control, 2 = study skills training, 3 = social skills training). (Note that the variable names have spaces in them, which may make it tricky to work with. You might consider renaming the variables.)
+  
+  -`homework-spatial`: These data come from Experiment 1 of Maglio & Polman (2014) where they examined whether a person’s spatial orientation would affect perceived distance. They conducted the experiment on a train. Half of the participants were headed eastbound whereas the other half were headed westbound (`direction` and also `orientation`; these are the same variable). Participants were also randomly assigned to indicate the subjective distance of one of the four subway stations (`station`). The outcome variable is `subjective distance`.
+
+- `homework-memory`. These data were generously provided by the first author, Wanjia Guo. (You might know her.) A full description of these data are provided in the relevant question.
+
+# 2-point Questions
+
+## Question 1{#q2.1}
+
+* Using the dataset `homework-happy`, run a two-predictor regression model predicting happiness by friendship and school success and the interaction between the two.
+
+* Describe in words exactly what the coefficients $b_1$, $b_2$, and $b_3$ are telling us in this model. 
+
+## Question 2
+
+Refer to the model built in [Question 2.1](#q2.1).
+
+Center the independent variables and re-estimate the model. Interpret the coefficient estimates. 
+
+## Question 3
+
+Health researchers commonly acknowledge that cardiac arrest is caused by high levels of cholesterol. They also agree that cholesterol is caused by smoking and weight. Moreover, it is generally agreed that both the choice to smoke and choices that contribute to weight are caused by generally unhealthy life styles. (Note, these are not the only causal factors contributing to either smoking or weight, but we're trying to keep the example manageable, for a 2-point problem). Build a DAG model that represents these known relationships. What are the different paths that transmit associations from smoking to cardiac arrest?
+
+## Question 4
+
+* In the question above, what variables, if any should a researcher control for if they want to estimate the causal association between smoking and cardiac arrest?
+
+* Should the researcher control for cholesterol? Why or why not?
+
+## Question 5
+
+This question uses the dataset `homework-happy.` 
+
+* Construct a linear model to test whether friendship quality has a curvilinear relationship with happiness. Interpret the results.
+
+* Create a figure that plots the predicted values of happiness by friendship quality using the model you created above. Include in this figure the raw data points. Based on this figure, do you believe the model you fit above represents a real relationship or a methodological artifact?
+
+# 5-point Questions
+
+## Question 1
+
+Refer to the model built in [Question 2.1](#q2.1).Calculate the slope of friendship quality at three different levels of school success: 
+
+* the mean of school success
+* 1 standard deviation below the mean of school success
+* 1 standard deviation above the mean of school success
+
+Interpret the results.
+
+Plot these simple slopes.
+
+## Question 2{#q5.2}
+
+[Maglio & Polman (2014)](Maglio and Polman 2014.pdf) studied the psychological distance of objects (how far away we _feel_ an object is) in the context of the subway: How far away does a passenger on a train perceive a station to be? For their study, they recruited participants who were standing either on an eastbound or westbound platform of a specific subway station (Bay Street). All participants were asked how far away another station on the route feels on a scale from 1 (very close) to 7 (very far). Participants were randomly asked about one of four stations: Spadina (two stops to the west), St. George (one stop to the west), Bloor-Yonge (one stop to the east), or Sherbourne (two stops to the east).
+
+* How many factors are in this design, and how many levels does each factor have?
+
+* What are the sample sizes for each group?
+
+* Run the factorial ANOVA from Experiment 1. Interpret the sums of squares and F-ratios.
+
+* Calculate the $\eta^2$ and partial $\eta^2$ effect sizes associated with each of your terms. What is the $R^2$ for the model?
+
+* Graph the results in a manner that you think best conveys that data (it does not have to be the same as in the article). Make sure you include 95% CIs. 
+
+
+## Question 3{#q5.3}
+
+Refer to the dataset and model estimated in Question 5.2(#q5.2).
+
+* Conduct a series of post-hoc tests that address the following hypotheses. (Be sure to interpret)
+
+    * People standing on the eastbound side of the station perceive things as closer than people standing on the westbound side of the station.
+
+    * People perceive the Spadina station as being farther away than the Sherbourne station.
+
+    * People on the westbound side perceive St.George as being closer than people on the Eastbound side.
+    
+
+# 10-point Questions
+
+## Question 1
+
+Refer to the dataset and model estimated in Question 5.2(#q5.2).
+
+* Run a power analysis to determine sample size needed for the omnibus  effect size $(R^2)$ found 90% of the time in the model fit above. (Note: the `pwr` package is a nice one to use but be sure to use the glm/regression one, `pwr.f2.test`, as opposed to the one-way anova. Also, pay close attention to the effect size requested. Those more adventurous can perform simulations to calculate power.)
+
+* The power analysis above does not give you the power for detecting differences between two cell means. Find the number of subjects needed for power of .90 with an effect size difference of .4 between two cell means, assuming no corrections for Type 1 error. (Hint: .4 is an unstandardized effect size, but most power functions require a standardized effect size. Some of the equations covered in PSY 611 may be helpful here.)
+
+* Assume that the researchers had an additional variable, familiarity with the area, to use as a covariate. The reasoning is that people who know the area well may make better distance predictions than those that do not. How do you think this would impact the findings? Describe what would change in terms of your standard regression components (why and in what direction).
+
+## Question 2
+
+This question uses the dataset `homework-memory`, which are the data used in a study published by some in our UO community [(Guo, Favila, Kim, Molitor, & Kuhl, 2021)](https://www.nature.com/articles/s41467-021-25126-0). A description of the study: 
+
+In this experiment, participants learn associations between scene and objects. Importantly, for every scene-object association, there exists another scene that is highly similar and is paired to an object from the same category, referred to as the _pairmate_. During the study, participants learned 18 pairmates (36 scene-object associations) across 6 rounds of learning and testing. For each participant and each pairmate, we identify the first round that the participant successfully associated the object with the scene, and we called it the _learned round_. The round that is just prior to the learned round is the _learned round - 1_. We calculated pattern similarity scores between each pairmates between _learned round - 1_ and _learned round_ -- referred to as the inflection point or _IP_ -- for 4 regions in the brain: CA23DG and CA1 (two subfields within the hippocampus) and PPA and EVC (two areas in the visual cortex). We also calculated the pattern similarity scores between _learned round - 2_ and _learned round - 1_ -- referred to as Pre. 
+
+
+* Conduct a factorial analysis of variance of the outcome (similarity) measure using region of interest (CA23DG, CA1, PPA, and EVC) and learning status (IP and Pre) as factors. Report a summary of the results (source of variance, _df_, _SS_, _MS_, _F_, and _p_) in a table.
+
+* Display in a graph the means and 95% confidence intervals for the 2 x 4 design.
+
+* Calculate $\eta^2$ and partial $\eta^2$ for the main effects and interaction. Report these in a table. Which sums of squares method did you use and why?
+
+* Conduct follow-up comparisons. Use some kind of adjustment to account for multiple comparisons. List the significant comparisons in a table.
+
+* Check the homogeneity of variance and normality assumptions. Are they met?
+
+
+# 20-point Questions
+
+### Question 1
+
+In class, we simulated the power to detect an interaction when X and Z were drawn from a normal distribution. However, in this simulation, we assumed that X and Z were uncorrelated. 
+
+* Repeat the simulations performed in class with the following changes:
+1. Include a third scenario in which X and Z are correlated with each other. 
+2. Vary the sample size -- specifically, run each experiment with 50 subjects, 100 subjects, 150 subject... up to 2000 subjects. 
+3. Simulate each version of each experiment 1,000 times, not 100 times. (So you should run 1,000 simulations for the experimental study with 50 subjects, and 1,000 simulations for the experimental study with 100 subjects, etc).
+
+Don't forget to set a seed so your results are reproducible.
+
+* For each scenario, calculate (a) the average effect size of the interaction and (b) the proportion of studies that found a significant effect. Display these results in a table. 
+
+* Create a figure that shows the relationship of power (i.e., the proportion of studies that found a significant effect) to sample size for each of the three scenarios. How many participants do you think you need to achieve 80% power for each of the three scenarios?
+

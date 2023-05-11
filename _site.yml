@@ -1,0 +1,89 @@
+name: Data Analysis II
+output_dir: "."
+navbar:
+  title: "PSY 612"
+  left:
+    - text: Syllabus
+      href: schedule.html
+    - text: Lectures
+      menu:
+      - text: "01-Correlation"
+        href: "lectures/01-correlation.html"
+      - text: "02-Correlation"
+        href: "lectures/02-correlation.html"
+      - text: "03-Univariate Regression"
+        href: "lectures/03-regression.html"
+      - text: "04-Univariate Regression"
+        href: "lectures/04-regression.html"
+      - text: "05-Univariate Regression"
+        href: "lectures/05-regression.html"
+      - text: "06-General Linear Model"
+        href: "lectures/06-glm.html"
+      - text: "07-Partial Correlations"
+        href: "lectures/07-partial.html"
+      - text: "08-Multiple Regression"
+        href: "lectures/08-m_regression.html"
+      - text: "09-Multiple Regression"
+        href: "lectures/09-m_regression.html"
+      - text: "10-ANOVA"
+        href: "lectures/10-anova.html"
+      - text: "11/12-Diagnostics"
+        href: "lectures/11-diagnostics.html"
+      - text: "13-Causal models"
+        href: "lectures/13-dag.html"
+      - text: "14-Interactions"
+        href: "lectures/14-interactions.html"
+      - text: "15-Interactions"
+        href: "lectures/15-interactions.html"
+      - text: "16/17-Factorial ANOVA"
+        href: "lectures/16-factorial.html"
+      - text: "18-Power/3-way interactions"
+        href: "lectures/18-power3.html"
+      - text: "19-Polynomials/Bootstrapping"
+        href: "lectures/19-poly_boot.html"
+      - text: "20-Review/Machine Learning"
+        href: "lectures/20-final.html"
+        
+    - text: Labs
+      menu:
+      - text: "Lab 1"
+        href: "labs/lab-1/lab-1.html"
+      - text: "Lab 2"
+        href: "labs/lab-2/lab-2.html"
+      - text: "Lab 3"
+        href: "labs/lab-3/lab-3.html" 
+      - text: "Lab 4"
+        href: "labs/lab-4/lab-4.html" 
+      - text: "Lab 5"
+        href: "labs/lab-5/lab-5.html" 
+      - text: "Lab 6"
+        href: "labs/lab-6/lab-6.html" 
+      - text: "Lab 7"
+        href: "labs/lab-7/lab-7.html" 
+      - text: "Lab 8"
+        href: "labs/lab-8/lab-8.html" 
+      - text: "Lab 9"
+        href: "labs/lab-9/lab-9.html"
+      - text: "Lab 10"
+        href: "labs/lab-10/lab-10.html"
+    - text: Homework
+      href: homework.html
+    - text: Final Project
+      href: final.html
+    - text: Useful Material
+      href: bonus.html
+  right:
+    - text: "Previous years"
+      menu: 
+        - text: "2022"
+          href: https://uopsych.github.io/psy612_2022/
+        - text: "2021"
+          href: https://uopsych.github.io/psy612_2021/
+        - text: "2020"
+          href: https://uopsych.github.io/psy612_2020/
+    - icon: fa-github
+      href: https://github.com/uopsych/psy612
+output:
+  html_document:
+    lib_dir: site_libs
+    self_contained: no

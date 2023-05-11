@@ -1,0 +1,548 @@
+---
+title: "Regression Diagnostics"
+output: 
+  html_document: 
+    fig_caption: yes
+    theme: cosmo
+    toc: yes
+    toc_depth: 3
+    toc_float: TRUE
+    df_print: paged
+editor_options: 
+  chunk_output_type: console
+---
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE,
+                      eval = FALSE)
+```
+
+You will need the Rmd file for today's lab - you can download it [here](https://uopsych.github.io/psy612/labs/lab-6/lab-6.Rmd).
+
+# Load Libraries
+
+Install any packages you have not used before.
+
+```{r, eval = FALSE}
+# load packages
+library(rio)       # for importing data
+library(tidyverse) # for dplyr, ggplot2, ETC
+library(gridExtra) # for plotting multiple figures side-by-side
+library(broom)     # for extracting residuals and outlier indices
+library(olsrr)     # for creating outlier plots
+library(psych)     # for calculating mahalanobis distance
+
+# suppress scientific notation
+options(scipen = 999)
+```
+
+# Import the Data
+
+We'll be working with several versions of a data set that includes participants' scores on happiness and extraversion. Each version has modified the data to represent one of the violations of the assumptions underlying linear regression.
+
+```{r}
+df1 <- import(file     = "https://raw.githubusercontent.com/uopsych/psy612/master/labs/lab-6/data/df_raw.csv",
+              setclass = "tibble") %>%
+  janitor::clean_names()
+
+df2 <- import(file     = "https://raw.githubusercontent.com/uopsych/psy612/master/labs/lab-6/data/df_nl.csv",
+              setclass = "tibble") %>%
+  janitor::clean_names()
+
+df3 <- import(file     = "https://raw.githubusercontent.com/uopsych/psy612/master/labs/lab-6/data/df_nne.csv",
+              setclass = "tibble") %>%
+  janitor::clean_names()
+
+df4 <- import(file     = "https://raw.githubusercontent.com/uopsych/psy612/master/labs/lab-6/data/df_het.csv",
+              setclass = "tibble") %>%
+  janitor::clean_names()
+
+df5 <- import(file     = "https://raw.githubusercontent.com/uopsych/psy612/master/labs/lab-6/data/df_out.csv",
+              setclass = "tibble") %>%
+  janitor::clean_names()
+
+df6 <- import(file     = "https://raw.githubusercontent.com/uopsych/psy612/master/labs/lab-6/data/df_mc.csv",
+              setclass = "tibble") %>%
+  janitor::clean_names()
+```
+
+The same variables (mostly) are contained in each dataset. Let's inspect the first data set, `df1`.
+
+```{r}
+df1
+```
+
+# Scatterplots
+
+Visualization is always a good place to start when inspecting the relationships between variables.
+
+We're going to focus on the relationship between `happiness` (Y) and `extraversion` (X). Let's visualize this using a scatterplot for each data set. 
+
+```{r}
+# scatterplot using df1
+scatter1 <- ggplot(data = df1, aes(x = extraversion, y = happiness)) +
+  geom_point() + 
+  geom_smooth(method = "lm") +
+  labs(x     = "Extraversion", 
+       y     = "Happiness", 
+       title = "df1") +
+  theme(plot.title = element_text(hjust = 0.5)) # Center the title
+
+# scatterplot using df2
+scatter2 <- ggplot(data = df2, aes(x = extraversion, y = happiness)) +
+  geom_point() + 
+  geom_smooth(method = "lm") +
+  labs(x     = "Extraversion", 
+       y     = "Happiness", 
+       title = "df2") +
+  theme(plot.title = element_text(hjust = 0.5))
+
+# scatterplot using df3
+scatter3 <- ggplot(data = df3, aes(x = extraversion, y = happiness)) +
+  geom_point() + 
+  geom_smooth(method = "lm") +
+  labs(x     = "Extraversion", 
+       y     = "Happiness", 
+       title = "df3") +
+  theme(plot.title = element_text(hjust = 0.5))
+
+# scatterplot using df4
+scatter4 <- ggplot(data = df4, aes(x = extraversion, y = happiness)) +
+  geom_point() + 
+  geom_smooth(method = "lm") +
+  labs(x     = "Extraversion", 
+       y     = "Happiness", 
+       title = "df4") +
+  theme(plot.title = element_text(hjust = 0.5))
+
+# scatterplot using df5
+scatter5 <- ggplot(data = df5, aes(x = extraversion, y = happiness)) +
+  geom_point() + 
+  geom_smooth(method = "lm") +
+  labs(x     = "Extraversion", 
+       y     = "Happiness", 
+       title = "df5") +
+  theme(plot.title = element_text(hjust = 0.5))
+
+# scatterplot using df6
+scatter6 <- ggplot(data = df6, aes(x = extraversion, y = happiness)) +
+  geom_point() + 
+  geom_smooth(method = "lm") +
+  labs(x     = "Extraversion", 
+       y     = "Happiness", 
+       title = "df6") +
+  theme(plot.title = element_text(hjust = 0.5))
+```
+
+Let's look at them side-by-side by using the `grid.arrange()` function from the `{gridExtra}` package.
+
+```{r}
+grid.arrange(scatter1, 
+             scatter2, 
+             scatter3, 
+             scatter4, 
+             scatter5, 
+             scatter6,
+             nrow = 2)
+```
+
+> **Question: Do you notice any potential issues from any of these scatterplots that we used to represent the data so far?**
+
+Let's run the linear models:
+```{r}
+model1 <- lm(happiness ~ extraversion, data = df1)
+model2 <- lm(happiness ~ extraversion, data = df2)
+model3 <- lm(happiness ~ extraversion, data = df3)
+model4 <- lm(happiness ~ extraversion, data = df4)
+model5 <- lm(happiness ~ extraversion, data = df5)
+```
+
+And then we'll perform regression diagnostics on them. There are multiple potential issues you can run into when fitting a linear regression model. Below, we will discuss these issues and how you can diagnose them.
+
+
+# Non-Linearity
+
+One of the assumptions underlying linear regression is that the form of the relationship between the predictor(s) and outcome is linear. If the actual form of the relationship is non-linear, then the linear model estimates could be quite inaccurate. 
+
+Non-linearity is typically diagnosed using a **residuals plot**, which is a plot of the model residuals by the model's fitted values.
+
+You can obtain a residuals plot using using the function `plot()`, which is included in base R. This function provides multiple diagnostic plots, but we will focus on the first one (which is the residuals plot).
+
+```{r}
+plot(model1, 1)
+```
+
+If the linear model is a good fit to the patter of the relationship, there will be no discernible pattern in the residuals plot. If there is some systematic pattern, this is indication that potentially there is a non-linear trend not being captured by the linear model.
+
+Let's also examine the plot for `model_2`.
+
+```{r}
+## your code
+```
+
+> **Question: Do you see a pattern in either of these plots that suggest the presence of a non-linear trend between extraversion and happiness that is not captured by the linear model?**
+
+
+**Potential Solution:** If your residuals plot suggests the relationship is non-linear, then consider fitting a non-linear model that more accurately captures the form of the relationship between the predictor(s) and outcome.
+
+
+# Non-normally Distributed Errors
+
+Another assumption underlying linear regression is that the model's residuals are normally distributed.
+
+To diagnose this problem, you can either:
+
+  * Examine the distribution of the residuals, and/or 
+  * Examine a Q-Q plot
+
+First, let's plot the distribution of the residuals for model 1. 
+
+To obtain the residuals, first we'll pass our model to the `augment()` function. Then, we'll plot the residuals using a density plot with a normal distribution overlaid on top to easily compare the shape of the two:
+```{r}
+# storing residuals
+model1_aug <- augment(model1)
+model1_aug
+
+# plotting histogram of residuals
+ggplot(data = model1_aug, aes(x = .resid)) + 
+  geom_density(fill = "purple") + 
+  stat_function(linetype = 2, 
+                fun      = dnorm, 
+                args     = list(mean = mean(model1_aug$.resid), 
+                                sd   =   sd(model1_aug$.resid))) +
+  theme_minimal()
+```
+
+Next, let's examine a Q-Q plot for model 1. We can create a Q-Q plot by using the `stat_qq()` function in the `{ggplot2}` package.
+
+```{r}
+ggplot(model1) +
+  geom_abline(color = "turquoise4") + 
+  stat_qq(aes(sample = .stdresid), color = "darkorchid4", alpha = .50) +
+  theme_minimal()
+```
+
+When the points on a Q-Q plot are close to lying on the diagonal line, the residuals are approximately normally distributed.
+
+
+
+Now, do the same thing, but this time let's examine whether we have violated the assumption of normally distributed residuals for `model3`.
+
+Obtain a density plot of the residuals from `model3`:
+
+```{r}
+## your code
+```
+
+Obtain a Q-Q plot for `model3`:
+
+```{r}
+## your code
+```
+
+> **Question: Do the errors appear to be approximately normally distributed?**
+
+
+
+**Potential Solution:** 
+Linear regression is robust to some degree of violation of the normality assumption. Some questions to consider are: Is the violation mild enough that you can proceed with analysis? Is there potentially a non-linear trend in the data that the linear model is not capturing, or should you consider fitting a non-linear model? Should you use a non-parametric test that makes no assumptions about the form of the model? 
+
+
+# Non-Constant Variance of Residuals (Heteroscedasticity)
+
+Another assumption underlying linear regression is called *homoscedasticity*, which is the assumption that the variance of an outcome is approximately the same across all values of the predictor(s). *Heteroscedasticity* is the violation of this assumption. The accuracy of the standard errors and confidence intervals depend on this assumption being met.
+
+
+The residuals plot can also be used to check for heteroscedasticity. Let's again examine the fitted values vs. residuals for `model1`.
+
+```{r}
+plot(model1, 1)
+```
+
+Now, we are looking at the amount of scatter in the residuals across the range of the fitted values. If the amount of scatter looks approximately the same, we have not violated the homoscedasticity assumption. 
+
+Check for heteroscedasticity in model 4 below. 
+```{r}
+## your code
+```
+
+> **Question: Is there evidence of heteroscedasticity ?**
+
+
+**Potential Solution:**Bootstrapping, weighted least squares, transformation on the outcome 
+
+
+# Non-Independence Among Errors
+
+Another assumption underlying linear regression is that the errors are uncorrelated. Non-independence occurs if there's a relationship between the residuals (for example, if you collected multiple observations from the same person, the errors associated with that person's observations would be correlated). 
+
+Non-independence of errors is a significant issue because then estimated standard errors will tend to be underestimates of true standard errors, which leads to test statistics being larger than they should be (more likely to erroneously conclude a predictor is significant), and confidence intervals will be smaller than they should be (suggesting you have more precision than you actually do). 
+
+In some cases, the research design will inform you of whether to expect non-independent errors. To test for non-independence when the research design does not inform you, you can look at a plot of the residuals with a variable that the errors should not correspond to (e.g., ID number, time).
+
+Let's check whether we have violated the assumption of independence of errors by plotting residuals against ID numbers for `model1`.
+
+```{r}
+model1_aug$id <- df1$id
+
+ggplot(data = model1_aug, aes(x = id, y = .resid)) + 
+  geom_point() +  
+  geom_smooth(se = F) +
+  geom_hline(yintercept = 0)
+```
+
+Repeat the same thing, but this time testing the independence of errors assumption for `model4`.
+
+```{r}
+## your code
+```
+
+> **Question: Does there appear to be a relationship between ID number and the residuals for either model above?**
+
+**Potential Solution:** Use a different analysis that does not assume non-independence among errors (e.g., multilevel modeling)
+
+
+# Outliers
+
+There are two types of outliers: univariate outliers and multivariate outliers.
+
+Univariate outliers are cases that have an unusual value on a single variable compared to where the majority of cases lie. 
+
+Multivariate outliers are cases with an unusual *set* of values compared to where the model lies. 
+
+## Univariate Outliers
+
+To diagnose univariate outliers, you can examine a histogram and/or boxplot for each variable of interest.
+
+First, let's look at a histogram for `happiness` and `extraversion` from `df5`.
+```{r}
+df5 %>% 
+  ggplot(aes(x = happiness)) + 
+  geom_histogram(fill = "purple", bins = 15) +
+  theme_minimal()
+
+df5 %>% 
+  ggplot(aes(x = extraversion)) + 
+  geom_histogram(fill = "purple", bins = 15) +
+  theme_minimal()
+```
+
+
+We could also examine a boxplot for each variable.
+
+```{r}
+ggplot(df5) +
+  aes(y = happiness) +
+  geom_boxplot() +
+  theme_minimal()
+
+ggplot(df5) +
+  aes(y = extraversion) +
+  geom_boxplot() +
+  theme_minimal()
+```
+
+The outer edges of the boxplot correspond to the first and third quartiles (the values partitioning where the middle 50% of the data is located).
+
+The upper whisker extends from the top edge of the boxplot to the largest value no further than 1.5 \* IQR from the edge (recall that IQR is the distance from the first to the third quartile). The lower whisker extends from the lower edge of the boxplot to the smallest value that is smallest value that is no further than 1.5 \* IQR from the edge. Data points beyond these are considered outliers.
+
+It looks like happiness has a potential outlier. To determine the value of the potential outliers, you can use the function `boxplot.stats()`. The value(s) underneath `$out` are scores on the variable that landed more extreme than the boxplot's whiskers.
+
+```{r}
+boxplot.stats(df5$happiness)
+```
+
+Let's find out who in the original dataset this value corresponds to.
+
+```{r}
+df5[df5$happiness == 32,]
+```
+
+
+## Multivariate Outliers
+
+You can also have multivariate outliers, which are outliers because they are far away from the values predicted by your linear regression model or they have an undue influence on the fit of the model.
+
+One straightforward way to visually inspect the data for multivariate outliers is to use bivariate scatterplots for each combination of outcome and predictor.
+
+Let's look again at the scatterplot of the relationship between `extraversion` and `happiness` for `df5`.
+
+```{r}
+scatter5
+```
+
+> **Question: Do there appear to be any multivariate outliers in the scatterplot?**
+
+
+### Outlier Distance from Model 
+
+You can also examine the distance of an observation from the model using several different numerical measures, including *standardized residuals*.
+
+Standardized residuals are the raw residuals converted into standardized units.
+
+We can plot the standardized residuals by using the `ols_plot_resid_stand()` function from the `{olsrr}` package.
+
+```{r}
+ols_plot_resid_stand(model5)
+```
+
+We can also look at the standardized residuals stored in `model5_aug`:
+
+```{r}
+model5_aug <- augment(model5)
+
+model5_aug$id <- df5$id
+
+model5_aug %>% 
+  select(id, .std.resid) %>%
+  arrange(desc(abs(.std.resid)))
+```
+
+One standard is that standardized residuals greater than $\pm2$ are worth inspecting further.
+
+
+### Outlier Influence on Model
+
+And finally, you can examine the *influence* that an outlier has on the fit of the regression model using many different numerical assessments. We'll go over *Cook's Distance* in this lab.
+
+Cook's Distance summarizes how much the regression model would change if you removed a particular case. It examines how different all of the fitted values would be with versus without a particular case.
+
+We can plot the Cook's Distances using the `ols_plot_cooksd_chart()` function from the `{olsrr}` package:
+
+```{r}
+ols_plot_cooksd_chart(model5)
+```
+
+We can also view the individual Cook's Distance in `model5_aug`:
+
+```{r}
+model5_aug %>% 
+  select(id, .cooksd) %>%
+  arrange(desc(abs(.cooksd))) 
+```
+
+One standard is that Cook's D values greater than 3 times the average Cook's D values are worth investigating.
+
+
+**Potential Solution:** Not all outliers should be immediately removed from the analysis. Consider the nature of the outlier (a data entry error? a real phenomenon?) and your research goal (interpretation? prediction?) when deciding whether to remove an outlier from the data. You can also provide results of your analysis both with and without the outlier. 
+
+
+
+
+
+# Multicolllinearity
+
+Multicollinearity occurs when one or more predictors in our model are highly correlated. 
+
+This poses an issue because if two or more predictors are highly redundant with one another, it becomes difficult to tell what the unique relationship each has with the outcome variable is. It also increases standard errors, which makes it more difficult to find significant effects.
+
+First, you can simply look at a correlation matrix of your predictors. Let's do this for `df6`, which contains two predictor variables.
+```{r}
+df6 # inspect data 
+
+cor(df6) # correlation matrix
+```
+
+The variables `extraversion` and `social_engagement` appear to be VERY highly correlated (*r* = 0.96)!
+
+We can't rely *only* on correlation matrices to identify collinearity, because it is possible for multicollinearity to exist among three or more variables (even if each pair of variables is not highly correlated). 
+
+Thus, we also want to calculate numerical measures of multicollinearity, including *tolerance* and *VIFs*.
+
+Tolerance is: $$1 - R_{12}^2$$
+
+* where $R_{12}^2$ is the R-squared value resulting from regression predictor 1 onto predictor 2.
+
+And VIF is $$\frac{1}{Tolerance}$$
+
+* which is simply the inverse of tolerance
+
+Let's run a model with two predictors using `df6`. We'll predict `happiness` from both `extraversion` and `social_engagement`.
+
+```{r}
+model6 <- lm(happiness ~ extraversion + social_engagement, data = df6)
+```
+
+We can examine the tolerance and VIF values of the model by using the `ols_vif_tol()` function from the `{olsrr}` package.
+
+```{r}
+ols_vif_tol(model6)
+```
+
+
+Notice that the tolerance is simply 1 minus the R-squared value you obtain if you run a regression model predicting one of the predictors from the other:
+```{r}
+tol_ext <- lm(extraversion ~ social_engagement, data = df6)
+
+tol <- 1 - summary(tol_ext)$r.squared
+tol
+
+VIF <- 1/tol # and VIF is its inverse
+VIF
+```
+
+
+Either a *low* tolerance (below 0.20 is one rule of thumb) or a *high* VIF (above 5 or 10) is an indication of a problem with multicollinearity.
+
+
+
+# Minihack 1
+
+Load the `bfi` dataset from the `{psych}` package (this is done for you below, in case you haven't loaded a dat set from a package).
+
+```{r}
+data(bfi, package = "psych")
+```
+
+First, create a model regressing age on the 5 items for `Conscientiousness` (labeled `C1`, `C2`, `C3`, `C4`, and `C5`). Assign the object to a variable called `model`.
+
+```{r}
+# your code here
+```
+
+Next, use `augment()` on the model. Save the output to variable called `model_aug`.
+
+```{r}
+# your code here
+```
+
+Next, check if the data meet the homoscedasticity assumption.
+
+```{r}
+# your code here
+```
+
+Next, check if the errors are normally distributed using a plot.
+
+```{r}
+# your code here
+```
+
+# Minihack 2
+
+Using `df5`, run a regression model with and without the outliers we identified.
+
+```{r}
+# your code here
+```
+
+Compare the output of the two models. How similar/different are they? What values change?
+
+# Minihack 3
+
+For this Minihack, use the `fitness` data from the `{olsrr}` package (loaded for you below).
+
+```{r}
+data(fitness, package = "olsrr")
+```
+
+Regress `runtime` on `weight`, `restpulse`, `runpulse`, and `maxpulse`.
+
+```{r}
+# your code here
+```
+
+Check the multicollinearity of predictors. Is multicollinearity at a tolerable level?
+
+```{r}
+# your code here
+```

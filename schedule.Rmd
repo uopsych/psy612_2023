@@ -1,0 +1,102 @@
+---
+title: "Syllabus"
+output: 
+  html_document:
+    toc: TRUE
+    toc_depth: 2
+    toc_float: TRUE
+    theme: cosmo
+---
+
+# Weekly schedule
+
+LSR readings can be found in the free, online textbook, [_Learning Statistics with R_](https://learningstatisticswithr-bookdown.netlify.com/index.html) by Danielle Navarro. For those interested in taking notes, I recommend the use of the [Hypothes.is](http://Hypothes.is) app to annotate webpages. I will note that the formatting of the book online is wonky in a few places. If this bothers you, or you prefer to work offline, you can download a [PDF version](https://learningstatisticswithr.com/lsr-0.6.pdf) of the book. 
+
+| Week | Date |  Topic                                           |Readings            | Quiz       | Homework    |
+-------|------|--------------------------------------------------|--------------------|------------|-------------|
+| 1    | 1/10 | Correlation (statistical test, power)            | [Revelle Chapter 4](readings/Correlation chapter4 Revelle.pdf) |            |             |
+| -    | 1/12 | Correlation II (correlation matrix, reliability) |                    |            |             |
+| -    | 1/13 | _Lab: Correlations_                              |                    |            |             |
+| 2    | 1/17 | Univariate regression (equation, $\hat{Y}$, $e$) |  LSR Chapter 15    |  Quiz 1    |             |
+| -    | 1/19 | Univariate regression II (inferential tests)     |                    |            |             |
+| -    | 1/20 | _Lab: Univariate regression_                     |                    |            |             |
+| 3    | 1/24 | Univariate regression III (precision)            |                    |  Quiz 2    |             |
+| -    | 1/26 | General linear model                             |                    |            |             |
+| -    | 1/27 | _Lab: General linear model _                     |                    |            |             |
+| 4    | 1/31 | Partial correlations                             |                    |  Quiz 3    |             |
+| -    | 2/02 | Multiple regression (interpretation, model fit)  |                    |            |             |
+| -    | 2/03 | _Lab: Two continuous predictors_                 |                    |            | HW 1 Due    |
+| 5    | 2/07 | MR: tolerance, model comparison                  |                    |  Quiz 4    |             |
+| -    | 2/09 | MR: Categorical predictors and one-way ANOVA     |  LSR Chapter 14    |            |             |
+| -    | 2/10 | _Lab: Categorical predictors_                    |                    |            |             |
+| 6    | 2/14 | Finish ANOVA; start assumptions                  | [Lynam et al (2006)](readings/Lynam-2006-Assessment.pdf) |  Quiz 5    |             |
+| -    | 2/16 | Assumptions and diagnostics                      |                    |            |             |
+| -    | 2/17 | _Lab: Diagnostics_                               |                    |            |             |             
+| 7    | 2/21 | Causal models                                    | [Rohrer (2018)](https://journals.sagepub.com/doi/pdf/10.1177/2515245917745629), [Rohrer (2017)](http://www.the100.ci/2017/03/14/that-one-weird-third-variable-problem-nobody-ever-mentions-conditioning-on-a-collider/)                   |  Quiz  6   |             |
+| -    | 2/23 | Interactions: Continuous x categorical (_pre-recorded_)           |  [McCabe et al (2018)](readings/AMPPS.pdf)                  |            |             |
+| -    | 2/24 | _Lab: Interactions_                              |                    |            |             |
+| 8    | 2/27 |               |      |      | HW 2 Due    |
+| -    | 2/28 | Interactions: Continuous predictors              | LSR Chapter 16     |  Quiz 7    |     |
+| -    | 3/02 | Factorial ANOVA                                  |                    |            |             |
+| -    | 3/03 | _Lab: ANOVA_                                     |                    |            |             |
+| 9    | 3/07 | Factorial ANOVA                                  | [McClelland & Judd (1993)](readings/McClelland-1993-Psychol Bull.pdf)     |  Quiz 8    |             |
+| -    | 3/09 | Power and 3-way Interactions                            |                    |            |             |
+| -    | 3/10 | _Lab: papaja_                                    |                    |            |             |
+| 10   | 3/14 | Polynomials and  Bootstrapping  | [Yarkoni & Westfall (2017)](readings/Yarkoni Westfall PPS.pdf) |            |             |
+| -    | 3/16 | Machine learning                           |                    |  Quiz 9    |             |
+| -    | 3/17 | _Lab: Bootstrapping_                             |                    |            | HW 3 Due    |
+|Finals| 3/20 |                                                  |                    |            | Final Project Due |         
+
+**Final:** The final project is due at 9am on March 24th.
+
+# Graded materials
+
+Your final grade is comprised of three components:
+
+  - Quizzes: 40\% 
+  - Homework: 40\% 
+  - Project: 20\% 
+
+## Quizzes
+
+Quizzes are intended to assess your understanding of the theoretical principles underlying statistics. There will be a quiz every Tuesday, with the exception of the first week, when there will be no quiz, and the final week when the quiz will be on Thursday.
+
+Quizzes may be resubmitted with corrections and receive full credit. To resubmit a quiz, write your corrections on the back of the quiz; for each question that was answered incorrectly, identify the correct answer, and explain why this is the correct answer. Only if the explanation sufficiently conveys an understanding of the theoretical principles will credit be given. There are no limits to the number of times a quiz may be resubmitted.
+
+If you are absent the day of a quiz, you can take a make-up quiz after the next lecture you attend.
+
+## Homework assignments
+
+Homework assignments are intended to gauge your ability to apply the topics covered in class to the practice of data analysis. Homework assignments are to be done using R and RMarkdown; completed assignments should be submitted through Canvas, and students must attach both the .Rmd file and the compiled HTML file.
+
+Homework assignments are due at the time the first lab starts on the day the assignment is listed. Homework assignments may be resubmitted with corrections and receive full credit. Please note, however, that corrections can only be made to problems that were answered at initial submission. There is no limit to the number of times a homework assignment may be resubmitted.
+
+Late assignments will receive 50% of the points earned. For example, if you correctly answer questions totalling 28 points, the assignment will receive 14 points. If you resubmit this assignment with corrected answers (a total of 30 points), the assignment will receive 15 points. Late assignments will be accepted only within 7 days of the original deadline.
+
+You may discuss homework assignments with your classmates; however, it is important that you complete each assignment on your own and do not simply copy someone else's code. If I believe one student has copied another's work, both students will receive a 0 on the homework assignment and will not be allowed to resubmit the assignment for points.
+
+## Final project
+
+The final project is due at 9am on the last day of finals week (March 24). Please note that, unlike quizzes and homeworks, there will not be an opportunity to re-attempt this assignment. Instructions for the final project can be [found here](https://uopsych.github.io/psy612/final.html).
+
+# Materials needed
+
+We will be using R for all data wrangling, visualization, and analysis. You may not use another statistical program in this course.
+Students must have the latest version of R, which can be downloaded [here](https://ftp.osuosl.org/pub/cran/). It is strongly recommended that students also download the RStudio GUI, available [here](https://www.rstudio.com/products/rstudio/download/#download). Both software programs are free. 
+
+You'll also need to download and install some version of LaTeX. There are different software programs for different operating systems -- you can find links to download them all [here](https://www.latex-project.org/get/).
+
+All reading assignments will be posted online. 
+
+# Policies
+
+**Cheating and plagiarism.** Any student caught cheating on an assignment, quiz, or exam will receive a 0 on that assignment. Frankly, you're in graduate school, and the purpose of work is to create opportunities to learn and improve. Even if cheating helps you in the short term, you'll quickly find yourself ill-prepared for the career you have chosen. If you find yourself tempted to cheat, please come speak to Dr. Weston about an extension and developing tools to improve your success. 
+
+**Students with special needs.** The UO works to create inclusive learning environments. If there are aspects of the instruction or design of this course that result in disability-related barriers to your participation, please notify me as soon as possible. You may also wish to contact Disability Services in 164 Oregon Hall at 541-346-1155 or [disabsrv@uoregon.edu](mailto:disabsrv@uoregon.edu).
+
+**If you are experiencing harassment.** I am an Assisting Employee under the University’s Prohibited Discrimination and Retaliation Policy. As an Assisting Employee, I will direct students who disclose prohibited discrimination and harassment, including sexual harassment or violence, to resources that can help and will **only** report the information shared to the university administration _if the student requests_ that the information be reported (unless someone is in imminent risk of serious harm or a minor).
+
+Students who have experienced sexual assault, relationship violence, sex or gender-based bullying, stalking, and/or sexual harassment may seek resources and help at [safe.uoregon.edu](https://safe.uoregon.edu/). To get help by phone, students may also call either the non-confidential Title IX Coordinator/OICRC at 541-346-3123 or the Dean of Students Office  24-hour hotline at 541-346-SAFE [7244]. Students experiencing all forms of prohibited discrimination or harassment may find information and resources at investigations.uoregon.edu or contact the non-confidential Title IX Coordinator/OICRC at 541-346-3123 or the Dean of Students Office at 541-346-3216 for help. Specific details about confidentiality of information and reporting obligations of employees can be found at [investigations.uoregon.edu/how-get-support](investigations.uoregon.edu/how-get-support).
+
+Mandatory Reporting of Child Abuse. UO employees, including faculty, staff, and GEs, are mandatory reporters of child abuse. This statement is to advise you that your disclosure of information about child abuse to a UO employee may trigger the UO employee’s duty to report that information to the designated authorities. Please refer to the following link for detailed information about mandatory reporting: [Mandatory Reporting of Child Abuse and Neglect](https://hr.uoregon.edu/policies-leaves/general-information/mandatory-reporting-child-abuse-and-neglect).
+

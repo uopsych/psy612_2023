@@ -1,0 +1,156 @@
+---
+title: 'PSY 612 Homework #2'
+author: "YOUR NAME HERE"
+output:
+  html_document:
+    toc: yes
+  pdf_document:
+    toc: yes
+---
+
+# Instructions
+
+Please complete this assignment using the RMarkdown file provided. Once you download the RMarkdown file please (1) include your name in the preamble, (2) rename the file to include your last name (e.g., "weston-homework-2.Rmd"). When you turn in the assignment, include both the .Rmd and knitted .html files.  
+
+To receive full credit on this homework assignment, you must earn **30 points**. You may notice that the total number of points available to earn on this assignment is 65 -- this means you do not have to answer all of the questions. You may choose which questions to answer. You cannot earn more than 30 points, but it may be worth attempting many questions for learning's sake. Here are a couple things to keep in mind:
+
+1. Points are all-or-nothing, meaning you cannot receive partial credit if you correctly answer only some of the bullet points for a question. All must be answered correctly.
+
+2. After the homework has been graded, you may retry questions to earn full credit, but you may only retry the questions you attempted on the first round. 
+
+3. The first time you complete this assignment, it must be turned in by 9am on the due date. Late assignments will receive 50% of the points earned. For example, if you correctly answer questions totaling 27 points, the assignment will receive 13.5 points. If you resubmit this assignment with corrected answers (a total of 30 points), the assignment will receive 15 points.
+
+4. You may discuss homework assignments with your classmates; however, it is important that you complete each assignment on your own and do not simply copy someone else’s code. If we believe one student has copied another’s work, both students will receive a 0 on the homework assignment and will not be allowed to resubmit the assignment for points.
+
+**Data:** 
+
+Some of the questions in this homework assignment use the dataset referred to as
+`homework-world`.  I This dataset is similar to one you've seen in class and contains a new variable called `World`. So-called "first world" countries (coded 1) are those that were aligned with the United States after World War II (e.g., members of NATO) or were considered to be clearly in the U.S. sphere of influence. "Second world" countries (coded 2) are former members of the Soviet Union or countries considered to have been clearly in the Soviet Union’s sphere of influence. "Third world" countries (coded 3) include those considered by the United Nations to be among the least developed countries in the world. The remaining countries are coded 4 for this variable.
+
+You'll also be asked to use a dataset called `homework-happy`. This data set contains variables indexing frienship quality, happiness, school success, parental SES, and an intervention group. Note that some of these variable names have spaces in them, which can make coding difficult. You will have to surround variable names with the symbol \` in order for R to recognize the full variable name. Alternatively, the `janitor` package includes the function `clean_names`, which will modify variable names by adding _ in place of spaces. I recommend this approach. I've provided an example of this in [question 2.5](#q2.5).
+
+# 2-point Questions
+
+## Question 1
+
+Use the `homework-world` data. You'll need the functions `pcor.test` and `spcor.test` in the `ppcor` package. 
+
+* Calculate the zero-order correlation between Happiness and Freedom. Interpret this correlation and its statistical significance.
+
+* Calculate the semi-partial correlation of Happiness and Freedom controlling for GDP. Treat Happiness as the outcome. Interpret this correlation and its significance. What do you learn when you compare this correlation to the zero-order correlation?
+
+## Question 2
+
+* Calculate the partial correlation of Happiness and Freedom controlling for GDP. Treat Happiness as the outcome. Interpret this correlation and its significance. What do you learn when you compare this correlation to the semi-partial correlation?
+
+## Question 3
+
+
+Using the data `homework-world`, create a regression model predicting happiness from GDP, Freedom, and Corruption. Interpret each regression coefficient. 
+
+## Question 4
+
+Calculate the standardized regression coefficients (b*) for the model above. You can use whatever method you would like.
+
+
+## Question 5{#q2.5}
+
+You are testing the efficacy of multiple intervention programs on school success. Your research design includes three groups: a control group, a tutoring program, and a study group program. You analyze your data and report the results:
+
+```{r, message = F}
+library(tidyverse)
+library(janitor)
+happy_d = read_csv("https://raw.githubusercontent.com/uopsych/psy612/master/homework/homework-happy.csv")
+happy_d = clean_names(happy_d)
+mod2.3 = lm(school_success ~ intervention_group, data = happy_d)
+anova(mod2.3)
+```
+
+During a Zoom meeting, you show these results to your adviser, who hasn't had any coffee yet today. They glance briefly at your Markdown output and say, "You did this wrong. Do it again." Before they can explain how to fix the code, their dog starts barking. They mutter something under their breath, say, "Gotta deal with the dog. I'll see you next week," and end the call.  
+
+Fix the code above to generate the correct analysis for this research question.
+
+
+# 5-point Questions
+
+## Question 1
+
+Use the `homework-world` data. Fit a model with Happiness as the outcome and Generosity as the predictor. Use it to answer the following questions:
+
+* What is the confidence interval for the estimate of the slope? In your own words, what does this confidence interval tell you?
+
+* A hitherto unknown country is discovered in the middle of the Pacific Ocean, known to its citizens as Westonia.  Westonia has a Generosity score of .25. Would you be surprised to learn that they have a happiness score of 7.7?
+
+* Plot your regression line. Be sure to include (1) the raw data points and (2) the 95% confidence band, and (3) the 95% prediction band.
+
+## Question 2
+
+You're interested in studying the joint and combined influence of school success, ses, and friendship quality on the happiness of adolescents. Using the dataset `homework-happy`, build three regression models. Each model should use happiness as the outcome variable and be nested within the subsequent model. That is, you should start with one predictor and add one additional predictor at a time. 
+
+* Justify the choices you made in building your models: How did you decide what order to add the variables?
+
+* Formally (statistically) compare these models. What do you conclude?
+
+
+## Question 3
+
+
+Use the `homework-world` dataset for this question. 
+
+* Conduct an analysis of variance (use the `aov()` function) to test the effect of the grouping variable, `world`, on happiness. 
+
+* What is the null hypothesis of this test? Do you reject or retain the null hypothesis?
+
+* Compute the pairwise comparisons of all groups. What do you conclude?
+
+* Create a plot to represent these findings. Be sure your plot includes the mean and 95% confidence interval of each group.
+
+
+# 10-point Questions
+
+## Question 1
+
+Using the dataset `homework-happy`, run a three-predictor regression predicting happiness by friendship quality, SES, and school success. 
+
+Check each of the six assumptions discussed in class. List each assumption and state how you examined (or would examine) that assumption. Note that not every assumption can be directly examined, but all should be addressed. Include plots where applicable and be sure to _interpret your output_. 
+
+
+## Question 2
+
+In this question, you'll use iteration to more efficiently conduct a series of analyses. First, read this blog post by Thomas Mock: [https://towardsdatascience.com/functional-programming-in-r-with-purrr-469e597d0229](https://towardsdatascience.com/functional-programming-in-r-with-purrr-469e597d0229).
+
+Now, you'll apply the principles of iteration. Use the `homework-world` dataset for this question. This dataset contains 7 variables of interest: happiness, gross domestic product, support, life expectancy, freedom, generosity, and corruption. 
+
+* Using the `map()` functions, conduct an analysis of variance (use the `aov()` function) for each of the measures, using country development status (`world`) as the grouping variable. In a table, report the degrees of freedom, _F_-statistic, and _p_-value for each analysis. 
+
+* Recall that the ANOVA model has the same homogeneity of variance assumption as the independent samples _t_-test. Assess the homogeneity of variance assumption for each of the outcome measures (use the `leveneTest()` function from the `car` package). Report these results in a single table and comment on whether this assumption is satisfied for each measure.
+
+* If we cannot assume homogeneity of variance when using a (Student's) independent samples _t_-test, we run a Welch's _t_-test, which doesn't have this assumption (but has lower power). There is an analogous test in the ANOVA framework, called the Welch's one-way test. Re-run the analyses of variance, but now use the Welch one-way test (use the `oneway.test() function`).  Comment on whether any conclusions about group differences change compared to the original ANOVAs.
+
+
+# 20-point Questions
+
+## Question 1
+
+In PSY 611 we discussed the problem of p-hacking, which can arise in quite a number of ways. While we have not spent much time talking about p-hacking this term, regression models are just as susceptible to p-hacking. In fact, there are be additional tools researchers can exploit to generate significant p-values. 
+
+Imagine that you have access to a dataset $(N = 50)$ that has an outcome you're interested in studying (Y) and a variable that you believe causes that outcome (X), as well as 30 other variables that may or may not be related to your research question. You create a model regressing Y on X and test the significance of the slope coefficient of X. If this is significant, then great! You stop analyzing the data. But if this is not significant, you try adding different covariates to your model until the slope of X is significant or you run out of covariates, whichever comes first. You're concerned about overfitting, so you only include one covariate in your model at a time.
+
+Simulate this scenario 5,000 times. Set a seed (using `set.seed` at the beginning so I can reproduce your results). For each simulated study, each variable should be randomly drawn from a normal distribution. In other words, the data will be consistent with the null hypothesis. For each study, tally whether the null hypothesis is rejected, the number of regression models that are built, the final unstandardized regression coefficient associated with X, and the final p-value associated with the slope of X. The proportion of rejections over the 5,000 studies is the empirical Type I error rate. We are interested in whether this matches closely the significance level chosen for the t-test (i.e., .05). The average effect size across the 5,000 studies should be close to 0. We're also interested in the distribution of p-values across this simulation. 
+
+One strategy would be to use an outer loop to index the 5,000 scenarios and an inner loop to index the changing of the regression model within a study. Some conditionals will be needed to decide if an interim slope test is significant. You will also need a way to stop a given scenarios and move on to the next one if the test of the slope is significant. 
+
+* First, determine the empirical Type I error rate for the scenario described above. How does it compare to the significance level of .05 set for the inferential test of the slope?
+
+* Determine the average effect size for this repeated testing scenario. How does it compare to the expected value given that the null hypothesis is true in this simulation?
+
+* Construct a histogram that shows the distribution of final p-values for the 5,000 studies. Comment on anything you notice as being odd about the shape of this distribution.
+
+* Construct a histogram that shows the distribution of final p-values for the 5,000 studies, but limit this figure to only p-value smaller than .10. Can you make any conclusion about the likelihood of specific p-values when the null hypothesis is true and the researcher is p-hacking?
+
+* Repeat the scenario above, but without the addition of any covariates. Construct a histogram that shows the distribution of final p-values for the 5,000 studies. What do you conclude about the distribution of p-values when the null hypothesis is true and the researcher is not p-hacking?
+
+* Finally, repeat the scenario above (no p-hacking), but using an X and a Y that are associated with each other. (Hint: A regression equation may be especially helpful here.) Construct a histogram that shows the distribution of final p-values for the 5,000 studies. 
+
+
+

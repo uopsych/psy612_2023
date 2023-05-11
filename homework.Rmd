@@ -1,0 +1,31 @@
+---
+title: "Homework Assignments"
+output: 
+  html_document:
+    toc: TRUE
+    toc_depth: 2
+    toc_float: TRUE
+    theme: cosmo
+---
+
+Homework assignments will appear here. You'll be able to access the assignment, as well as any data that may be used. Homework assignments will be posted **at least one week** before they are due. Submit homework assignments through Canvas by the due date and time. Homework assignments are due prior to the start of the first lab section on the day they are listed. 
+
+### [**Homework 1**](homework/homework-1.html)
+
+**Due February 3, 9am**
+
+- [Download all files here.](homework/homework-1.zip)
+
+
+### [**Homework 2**](homework/homework-2.html)
+
+**Due February 27, 9am**
+
+- [Download all files here.](homework/homework-2.zip)
+
+### [**Homework 3**](homework/homework-3.html)
+
+**Due March 17, 9am**
+
+- [Download all files here.](homework/homework-3.zip)
+

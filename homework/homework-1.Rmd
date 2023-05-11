@@ -1,0 +1,179 @@
+---
+title: 'PSY 612 Homework #1'
+author: "YOUR NAME HERE"
+output:
+  html_document:
+    toc: yes
+    toc_float: yes
+  pdf_document:
+    toc: yes
+---
+
+# Instructions
+
+Please complete this assignment using the RMarkdown file provided. Once you download the RMarkdown file please (1) include your name in the preamble, (2) rename the file to include your last name (e.g., "weston-homework-1.Rmd"). When you turn in the assignment, include both the .Rmd and knitted .html files.  
+
+To receive full credit on this homework assignment, you must earn **30 points**. You may notice that the total number of points available to earn on this assignment is 65 -- this means you do not have to answer all of the questions. You may choose which questions to answer. You cannot earn more than 30 points, but it may be worth attempting many questions for learning's sake. Here are a couple things to keep in mind:
+
+1. Points are all-or-nothing, meaning you cannot receive partial credit if you correctly answer only some of the bullet points for a question. All must be answered correctly.
+
+2. After the homework has been graded, you may retry questions to earn full credit, but you may only retry the questions you attempted on the first round. 
+
+3. The first time you complete this assignment, it must be turned in by 9am on the due date. Late assignments will receive 50% of the points earned. For example, if you correctly answer questions totaling 27 points, the assignment will receive 13.5 points. If you resubmit this assignment with corrected answers (a total of 30 points), the assignment will receive 15 points.
+
+4. You may discuss homework assignments with your classmates; however, it is important that you complete each assignment on your own and do not simply copy someone else’s code. If we believe one student has copied another’s work, both students will receive a 0 on the homework assignment and will not be allowed to resubmit the assignment for points.
+
+**Data:** Some of the questions in this homework assignment use the dataset referred to as `homework-anxiety`. In this dataset, you'll find four variables: 
+  - id - numeric, refers to participant ID
+  - Anxiety - participant's average levels of anxiety over a week; Stress -- the participant's average level of stress over a week
+  - Support -- the participant's perceived social support over a week
+  - group -- categorical, whether the participant was randomly assigned to a treatment group in which they given mediation instructions and were required to meditate for 10 minutes each day during the week. 
+
+Some questions refer to the dataset `homework-dawtry.csv` This dataset comes from Study 1a in the article by [Dawtry et al. (2015)](../data/Dawtry et al 2015 PS.pdf), which examines the relationship between wealth and perception of wealth. Study 1a is an observational study in which American participants indicated their own household income and estimated how incomes are distributed across both their immediate social circles and the wider population. Participants then indicated how fair and satisfactory they perceived society to be and whether they supported redistribution efforts, as well as their political orientation. You may need to refer to the article to complete the questions associated with this dataset. 
+
+One question uses the dataset in `homework-robin.csv`. You'll find the dataset is organized as follows: each row is the rating of one person by one person. The `group` indicates which group the two people -- subject (judge) and target -- belong to, as well as columns indicating the specific `subject` and `target`. Note that when the subject number is the same as the target number, the ratings are self-ratings. The remaining column holds the ratings of extraversion. 
+
+# 2-point Questions
+
+## Question 1{#q2.1}
+
+| X | Y  |
+|---|----|
+| 1 | 1  |
+| 5 | 18 |
+| 5 | 13 |
+| 5 | 17 |
+| 3 | 14 |
+| 5 | 20 |
+| 3 | 3  |
+| 4 | 13 |
+| 1 | 1  |
+| 4 | 13 |
+| 4 | 7  |
+| 1 | 7  |
+| 3 | 17 |
+| 4 | 8  |
+| 4 | 3  |
+
+Calculate the correlation between X and Y. 
+
+## Question 2
+
+Refer to the data provided in [question above](#q2.1).
+
+* Calculate the unstandardized regression equation (use Y as the outcome). You may use whatever functions you want.
+
+* Calculate the standardized regression equation. You may use whatever functions you want.
+
+## Question 3
+
+You are contacted by the Dean's office. They ran a correlation between UO undergraduate SAT scores and happiness and found a correlation of r = .21061 with a sample of $N = 600$. They want to know if this is lower than a published meta-analytic estimate (.2554)? 
+
+* Is the correlation found in the UO sample significantly different from the population parameter? Do this "by hand". Treat the meta-analytic estimate as the "population."
+
+* Calculate a 95% confidence interval around the estimate correlation "by hand." 
+
+* What would the 95% confidence interval around this estimate be if the sample size were only $N = 60$?
+
+## Question 4
+
+You are given data with two variables, X and Y. The mean of X is 3 with a SD .75. Y has a mean of 4 with a SD of .50. The correlation between the two is r = .3. 
+
+* "By hand", calculate the regression equation. Interpret each term in equation.
+
+* "By hand," convert the equation into a standardized regression equation. Interpret each term.
+
+## Question 5
+
+Using the `homework-dawtry` dataset, answer the following questions:
+
+* What is the correlation between age and the mean income of one's social circle?
+
+* Is that correlation statistically significant?
+
+* Use the `corrplot` package to create a figure of the correlation matrix of the variables in the dataset. Describe one thing you find interesting in this figure. 
+
+# 5-point Questions
+
+## Question 1
+
+
+The file named `homework-dawtry.csv` contains the raw data from Study 1A of [Dawtry et al. (2015)](Dawtry et al 2015 PS.pdf)). One of the constructs measured in that study is a composite variable: that is, it is measured using multiple items. This question will give you some practice with (1) using supplemental materials to learn more about a published study and (2) calculating reliability.
+
+* Using the PDF file of the article (included in the zip-file for the homework), identify that construct that is a composite variable.
+
+* The authors posted supplemental materials on the Open Science Framework. Find this repository and use it to identify the items that are used to construct the composite variable. Write the text of those items here:
+
+* Do you believe any of these items should be reverse-scored? If so, which ones?
+
+* What are the names of the items in the data file (csv)?
+
+* Use the `alpha()` function in the `psych` package to calculate Cronbach's alpha for this composite variable. Make sure items that should be reverse scored (if there are any) are indeed reverse scored.
+
+* What is the reliability for this scale? Would you say that the reliability is good?
+
+* BONUS (worth 1 extra point!) You can use the `alpha()` function to quickly calculate sum scores! Save the output of the `alpha()` function to a new object. Extract the scores by indexing (with `$`) the scores sub-object. Add that to your data frame and show that the mean and standard deviation of this variable matches the descriptive statistics in Dawtry et al.
+
+## Question 2
+
+*t*-tests are a simple form of regression, where there is only one predictor variable and it is binary. In the process of estimating this model, R takes the character variable associated with X and creates a new variable of 0's and 1's. 0's correspond to a reference group and 1's correspond to the other group. 
+
+* Using the `homework-anxiety`, estimate the regression model with Support as the outcome and group as the predictor. Which level of group was made the reference group? How can you tell?
+
+* Create your own variable inside the `homework-anxiety` data frame of 1's and 0's that make the other level the reference group. Estimate the regression model with this new variable. How are the two models the same and how are they different?
+
+* Now create a new variable with 0 (reference group) and 5 (other group). (You can choose which level is the reference group.) Run the regression model with this variable. What do the intercept and slope represent?
+
+* Now create a new variable where the reference group is represented by -1 and the other group is represented by 1. Run the regression model with this variable. What do the intercept and slope represent? (Hint: it may help to run descriptive statistics on your data frame to figure this out).
+
+## Question 3
+
+* Use the `homework-anxiety` data. Run a regression with Social Support (X) predicting Anxiety (Y). Then run a regression with Anxiety predicting Social Support. What is similar and different between these analyses?
+
+* Graph the regression with Anxiety as the DV. Include a confidence band and raw data points. Be sure your figure includes a title and caption.
+
+* For the regression of Social Support predicting Anxiety, correlate the fitted values with: a. residuals, b. Social Support, c., Anxiety. Explain the patterns you find.
+
+* Using the anova function for the model output, calculate R squared "by hand" using numbers in the anova table.
+
+* For the same model, interpret the residual standard error.
+
+# 10-point Questions
+
+## Question 1 
+
+Choices that individuals make in the voting booth, such as whether to support a more conservative or liberal candidate, may be affected by a number of factors. In their research, Beall, Hofer, and Schaller (2016) sought to examine the role of outbreaks of infectious diseases on voting behavior. The authors hypothesized that an outbreak of a disease, such as Ebola, may increase support for more conservative political candidates. To test this hypothesis, the authors examined the frequency of Google searches for “Ebola” during the weeks prior to and after the outbreak of Ebola that occurred in 2014. The authors also examined support for the conservative Republican party in the US.
+
+Below is an image of the output from a regression analysis, using their data: `republican` is a measure of support for the republican party; `ebola` is an index of the number of searches for Ebola on Google. Each observation was a day leading up to the national election. (Note, if this image does not load, you may need to download it from GitHub and save it in the same location as your homework file.)
+
+There are some missing values in the output, labeled with red letters. Complete the output by computing the missing values (A-L).
+
+![](beall_output.png)
+
+## Question 2
+
+* Given a sample size of 40 participants, what is the smallest correlation we are able to detect as being significantly different from 0? Use a two-tailed test and $\alpha = .05$. (Do not use the `pwr` package for this problem -- there is an answer that does not depend on power.)
+
+* Given a sample size of 40 participants, what is the smallest correlation we are able to detect as being significantly different from .3? Use a two-tailed test and $\alpha = .05$. (Do not use the `pwr` package for this problem -- there is an answer that does not depend on power.)
+
+# 20-point Questions
+
+## Question 1
+
+This question focuses on working with aspects of `tidy` and `dplyr`, but more importantly, is an abstract thinking problem. Can you start with data collected one way and figure out how to rearrange it to give you something else? I especially recommend the `group_by()` and `fill()` functions for this, but know that there are many ways to correctly solve this puzzle. You may *not* solve this problem by rewriting vectors by hand (e.g., `target = c(1, 2, 3)`) or indexing values based on position (e.g., `target[c(1,2,3)]`).  
+
+Round robin designs are great tools in perception research. A round-robin design is when each member of a group rates every other member. Taylor Guthrie, a UO grad student in the Computational Social Neuroscience Lab, spearheaded one such study in 2019. Taylor recruited groups of 6 people that all somewhat knew each other. Groups included those from Greek life, academic organizations,coworkers and friend groups. Each person came in individually for a behavioral session in which they rated both themselves and all of the other members of their group on a variety of survey measures. We'll be using the ratings on Extraversion for this question. 
+
+Your task is to calculate the following: 
+
+* The correlation between targets' self-reports and the ratings of the target by other people.
+
+* The correlation between targets' self-reports and the average rating of the target by members of their group. How does this values compare to the one estimated above? What do you conclude about the agreement between self- and other-ratings?
+
+* The correlation between targets' self-reports and the other people by the target. How does this value compare to the values estimated above? What do you conclude about the relationship between ratings of the self and ratings of others?
+
+* The correlation between targets' self-reports and the target's average rating of other people. How do these values compare to the values estimated above? What do you conclude about the relationship between ratings of the self and ratings of others?
+
+
+
+

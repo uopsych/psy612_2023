@@ -1,0 +1,351 @@
+---
+title: "Lab 7: Continuous x Categorical Interactions"
+output: 
+  html_document: 
+    fig_caption: yes
+    theme: cosmo
+    toc: yes
+    toc_depth: 3
+    toc_float: TRUE
+    df_print: paged
+editor_options: 
+  chunk_output_type: console
+  markdown: 
+    wrap: 72
+---
+
+```{r, include = FALSE}
+#set scientific notification
+options(scipen = 999)
+```
+
+You can download the Rmd file [here](lab-7.Rmd) to follow along.
+
+# Purpose
+
+Today we will review how to run models containing interactions between a
+continuous and categorical predictor. We will go over how to specify
+interaction terms in R, how to interpret the model output, and how to
+visualize the results.
+
+Be sure to have the following packages loaded:
+
+```{r, message = FALSE, warning = FALSE}
+library(rio) # for importing
+library(tidyverse) # for plotting and data wrangling
+library(psych) # for calculating descriptives
+library(sjPlot) # for plotting interactions
+library(emmeans) # for simple slope tests
+```
+
+# Research scenario
+
+Today's dataset was inspired by a recent study by [Markowitz & Levine
+(2021)](https://journals.sagepub.com/doi/pdf/10.1177/1948550619898976?casa_token=kum1VwoltKAAAAAA:jQngdX1FojAVb_8GQF5ZGBAnRvMoK2dFdzcvIqFyOPRWTbyhQ1p0fWvzz0zZHS7i2LpJIr-VTA)
+(the data you will be working with has been simulated). In the study,
+participants completed a matrix task under time pressure and then
+self-reported their scores. For each matrix problem that they got right,
+they could earn 25 cents, so it was tempting to cheat and self-report a
+higher score. Half of the participants shredded their worksheet before
+self-reporting and half of the participants handed the worksheet to the
+experimenter before self-reporting. Honesty scores were also
+self-reported from the HEXACO Personality Inventory (from 1 = extremely
+low honesty to 5 = extremely high honesty). The researchers hypothesized
+that personality and situation would interact to predict dishonest
+behavior.
+
+## Import the data
+
+```{r}
+#import data
+
+data <- import("https://raw.githubusercontent.com/uopsych/psy612/master/labs/lab-7/data/cheating_data.csv")
+
+data <- data %>% mutate(condition = factor(condition,
+                                  labels = c("Non-shredder", "Shredder")))
+
+```
+
+## Explore the data
+
+-   Use `str()` to look at the structure of the data
+-   Use `head()` to look at the first few rows of the data
+-   Calculate descriptives for the variables `honesty` and
+    `claimed_solved`
+-   Calculate descriptives for the variables `honesty` and
+    `claimed_solved`, grouped by `condition`
+
+```{r}
+# your code here
+```
+
+
+# Simple regression
+
+First, let's look at what the overall relationship between honesty and number of problems people claimed they solved looks like. 
+
+Graph in `ggplot()`.
+
+```{r}
+data %>% 
+ggplot(aes(x = honesty, y = claimed_solved)) +
+  geom_point()+
+  geom_smooth(method = "lm", se = FALSE)+
+  geom_label(x = 2, y = 5.8, label = "all") +
+  theme_minimal()
+```
+
+
+Second, let's perform a simple regression model using `honesty` as a single predictor of number of problems people claimed they solved, `claimed_solved`.
+
+$$\hat{Claimed_i} = \beta_0 + \beta_1Honesty $$ 
+
+Run this model using `lm()`.
+
+```{r}
+# your code here
+```
+
+> Question: Write the full model with parameter estimates filled in:
+
+$$\hat{Claimed_i} = $$ 
+
+
+> Question: What do each of the parameter estimates mean?
+
+
+
+
+
+# Main Effects of Categorical & Continuous Variables
+
+Let's look at a model that investigates both `honesty` and `condition` as predictors of `claimed_solved`, but not their interaction.
+
+$$\hat{Claimed_i} = \beta_0 + \beta_1Honesty + \beta_2Condition$$ 
+
+Run this model using `lm()`.
+
+```{r}
+# your code here
+```
+
+> Question: Write the full model with parameter estimates filled in:
+
+$$\hat{Claimed_i} = $$ 
+
+
+> Question: What do each of the parameter estimates mean?
+
+
+
+
+
+
+We could simplify the above equation to represent the relationship between honesty and number of problems people claim to have solved for the non-shredder (condition = 0) and shredder conditions (condition = 1):
+
+* Non-shredder (Condition = 0):
+
+$$\hat{Claimed_i} = 6.04 -0.45Honesty + 1.12(0) = 6.04 - 0.45Honesty$$ 
+* Shredder (Condition = 1):
+
+$$\hat{Claimed_i} = 6.04 -0.45Honesty + 1.12(1) = 7.16 - 0.45Honesty$$ 
+Notice that the only difference between these two equations are their intercepts. If we graphed the two models, it would look like:
+
+```{r}
+data %>% 
+ggplot(aes(x = honesty, y = claimed_solved)) +
+  geom_point() +
+  geom_abline(slope = -.45, intercept = 6.04, color = "red", size = 1) +
+  geom_abline(slope = -.45, intercept = 7.16, color = "blue", size = 1) +
+  geom_label(x = 1.5, y = 5.2, label = "shredder") +
+  geom_label(x = 1.5, y =6.5, label = "no shredder") +
+  theme_minimal()
+```
+
+We are not allowing the relationship between `honesty` and `claimed_solved` to differ between the two *shredder* and *non-shredder* conditions. 
+
+However, our theory predicts that people will act differently depending on the condition that they were in. To investigate this, we need to include the *interaction effect* to examine whether the relationship between honesty and number of problems people claimed they solves *differs depending on whether people were in the non-shredder or shredder condition*.
+
+
+# Continuous x Categorical Interaction
+
+## Visualization
+
+First, let's graph the continuous X categorical interaction between honesty and condition.
+
+In `ggplot`:
+
+```{r}
+# on a single graph
+data %>% 
+ggplot(aes(x = honesty, y = claimed_solved)) +
+  geom_point()+
+  geom_smooth(method = "lm", se = FALSE, aes(color = condition)) +
+  # scale_color_manual(values = c("red", "blue")) +
+  theme_minimal()
+
+# on two separate graphs
+data %>% 
+ggplot(aes(x = honesty, y = claimed_solved)) +
+  geom_point()+
+  geom_smooth(method = "lm", se = FALSE)+
+  facet_wrap(~condition) +
+  theme_minimal()
+```
+
+It certainly looks like there could be a significant interaction effect. Let's run the multiple regression model to examine it further.
+
+## Centering
+
+Notice that in this case, honesty has been measured on a 1 to 5 scale. If we do *not* center honesty first, the model intercept will correspond to the predicted `claimed_solved` score when honesty = 0, a value that falls outside of the range of possible ones.
+
+Typically, the continuous variables will be centered prior to running the analysis. This guarantees that the intercept will intersect the y-axis at a meaningful value (when the predictor is equal to its mean). 
+
+To center the continuous predictor:
+```{r}
+# You can either...
+data <- data %>%
+   mutate(honesty_c = honesty - mean(honesty), # subtract the mean, or
+          honesty_center = scale(honesty, scale = FALSE)) # use the scale() function
+```
+
+## Running the Interaction Model
+
+Run a multiple regression model predicting `claimed_solved` from `honest_c`, `condition`, and the interaction between the two.
+
+$$\hat{Claimed_i} = b0 + \beta_1Honesty_C + \beta_2Condition + \beta_3Honest_C*Condition$$ 
+
+```{r}
+# Your code here
+```
+
+
+
+
+
+
+
+
+One more way of plotting the interaction after you've run the interaction model:
+
+In `sjPlot`
+
+```{r}
+model_int <- lm(claimed_solved ~ honesty_c*condition, data = data)
+
+plot_model(model_int, type = "pred", terms = c("honesty_c", "condition")) 
+
+# type = "pred" means a plot of the predictor vs the predicted values of y
+# the first variable listed in the terms goes on the x-axis, the second variable gets its levels separated by color
+```
+
+> Question: Write the full model with parameter estimates filled in:
+
+$$\hat{Claimed_i} = $$ 
+
+> Question: What do each of the parameter estimates mean?
+
+
+
+
+
+
+
+
+## Testing Significance of Simple Slopes
+
+The *simple slopes* are the slopes representing the relationship between predictor 1 and Y at specific levels of predictor 2. We can get simple slopes to examine what the relationship is between `honesty_c` and `claimed_solved` at different levels of `condition`.
+
+To get the *simple slopes* we can use the `emtrends` function from the `emmeans` package. 
+
+There are different questions we can ask by calculating simple slopes and performing hypothesis tests with them.
+
+Q1: Is honesty a significant predictor of number of problems people claim to have solved at each level of condition (non-shredder & shredder conditions)?
+```{r}
+emtrends(model_int, ~condition, var = "honesty_c")
+```
+
+Q2: Is the slope for the non-shredder condition (-0.85) significantly different from the slope for the shredder condition (-0.08)?
+```{r}
+emtrends(model_int, pairwise~condition, var = "honesty_c")
+```
+
+This is the same as the test of the interaction effect from the overall model.
+
+Q3: Is there a significant difference in the number of problems people claimed to have solved between the non-shredder and shredder conditions at different levels of honesty?
+
+Because honesty is a continuous variable, we first have to choose specific values to examine the difference between non-shredder and shredder conditions at.
+```{r}
+chosen_values <- list(honesty_c=c(-2, -1, 0, 1, 2), condition = c("Non-shredder","Shredder"))
+
+combinations <- emmeans(model_int, ~ honesty_c*condition, at=chosen_values)
+
+#from emmeans
+contrast(combinations, "pairwise", by = "honesty_c")
+```
+
+
+# Minihacks
+
+You are interested in whether the time students spend studying
+(`study_time`) interacts with test anxiety (`anxiety`) to predict
+students' test performance (`perf`).
+
+Import the data below:
+
+```{r}
+test_perf <- import("https://raw.githubusercontent.com/uopsych/psy612/master/labs/lab-7/data/test_perf.csv")
+```
+
+```{r, eval = FALSE}
+head(test_perf)
+str(test_perf)
+psych::describe(test_perf)
+
+```
+
+As you can see, anxiety is measured categorically ("low" or "high") and
+study time ranges from .9 hours to 6.30 hours.
+
+## Minihack 1
+
+Run a model testing whether test anxiety moderates the relationship
+between time spent studying and test performance. Center study time so
+that it is more meaningful.
+
+```{r}
+#Your code here
+
+```
+
+Interpret the model coefficients.
+
+------------------------------------------------------------------------
+
+## Minihack 2
+
+Visualize the interaction using `sjPlot` or `ggplot`.
+
+```{r}
+#Your code here
+```
+
+------------------------------------------------------------------------
+
+## Minihack 3
+
+Test whether each simple slope is significantly different from 0.
+
+```{r}
+#Your code here
+```
+
+Test whether the simple slopes for low anxiety and high anxiety are
+significantly different from each other.
+
+```{r}
+#Your code here
+
+```
+
+What do the results of these significance tests mean?

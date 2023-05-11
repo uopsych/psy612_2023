@@ -1,0 +1,85 @@
+---
+title: "Helpful and/or interesting material"
+output: 
+  html_document:
+    toc: TRUE
+    toc_depth: 2
+    toc_float: TRUE
+    theme: cosmo
+---
+
+This page contains links to journal articles, blog posts, webpages, etc., that we (the instructors) believe may be useful to you, or at the very least interesting. **Bold** articles are ones that we consider **must-reads** but don't have enough time to actually assign. And to be clear, must-read means that people will probably assume you've read this and know the basic points.  
+
+## [Cohen, Cohen, West, & Aiken (2003)](https://psycnet.apa.org/record/2002-18109-000)
+
+For additional review of correlation and regression beyond the assigned textbook, here are chapters from another popular textbook (edition 3).
+
+[Chapter 1. **Introduction.**](readings/CCWA_ch1.pdf) 
+  - Multiple regression/correlation as a general data-analytic system
+  - A comparison of multiple regression/correlation and analysis of variance approaches
+  - Multiple regression/correlation and the complexity of behavioral sciences
+  - Orientation of the book
+  - Computation, the computer, and numerical results
+  - The spectrum of behavioral sciences
+  
+[Chapter 2. **Bivariate Correlation and Regression.**](readings/CCWA_ch2.pdf) 
+  - Tabular and graphic representations of relationships
+  - The index of linear correlation between two variables
+  - The Pearson Product-Moment Correlation Coefficient
+  - Alternative formulas
+  - Regression coefficients
+  - Regression toward the mean
+  - The standard error of the estimate and measures of the strength of association
+  - Statistical inference
+  - Precision and power
+  - Factors affecting the size of _r_
+  
+[Chapter 3. **Multiple Regression/Correlation with Two or More Independent Variables**](readings/CCWA_ch3.pdf) 
+  - Causal models
+  - Regression with two independent variables
+  - Measures of association 
+  - Patterns of association
+  - Multiple regression/correlation with _k_ independent variables
+  - Statistical inference
+  - Precision and power
+  - Equations and prediction
+  
+
+## On coding and data science
+
+Peters (2004) ["The Zen of Python."](https://www.python.org/dev/peps/pep-0020/) -- A list of 19 principles for writing better Python code; the principles also apply to writing better R code. 
+
+Hill (2019) ["Meet xaringan."](https://arm.rbind.io/slides/xaringan.html#1) -- There are a ton of resources for learning how to make slides using R. Too many to list here. I like this one because it's accessible, funny, visually appealing, and will help you make slides that you're proud of. (By the way, UO has theme you can use.)
+
+Bryan (2019) ["Happy Git with R."](https://happygitwithr.com) -- Interested in using GitHub for version control? Jenny Bryan will guide you through the process and metaphorically hand you a tissue when you're screaming with frustration.
+
+Anderson (2021) ["Social Data Science with R"](https://www.sds.pub/index.html) -- This book is currently being developed for the data science sequence at the University of Oregon, taught in the education department by Daniel Anderson. It is a helpful resource for foundational coding skills and data visualization in R. 
+
+Robinson (2016) [Broom: Converting Statistical Models to Tidy Data Frames](https://www.youtube.com/watch?v=7VGPUBWGv6g) -- This YouTube video explains how to use the `{Broom}` package to extract useful information from model objects. 
+
+## On creating useful graphics
+
+Patil (2020) ["ggstatsplot"](https://indrajeetpatil.github.io/ggstatsplot/index.html) -- A very useful R package for creating visuals to display some basic univariate and bivariate descriptives. 
+
+## On statistical models
+
+[YouTube series on linear algebra](https://www.youtube.com/playlist?list=PLZHQObOWTQDPD3MizzM2xVFitgF8hE_ab)
+
+[PSY 611](https://uopsych.github.io/psy611/) -- Don't forget everything we covered last term!
+
+Dunn & Smyth (2019) [Generalized Linear Models With Examples in R](https://link.springer.com/book/10.1007/978-1-4419-0118-7) -- if you're looking for a supplemental (free, online) textbook to cover general and generalized linear models, I highly recommend this one. It includes useful tidbits, like [coding factors](https://link.springer.com/chapter/10.1007/978-1-4419-0118-7_1#Sec4), an expansion on the [matrix algebra notation](https://link.springer.com/chapter/10.1007/978-1-4419-0118-7_2#Sec13) for multiple regression, and an extended section on the [R code](https://link.springer.com/chapter/10.1007/978-1-4419-0118-7_2#Sec39) useful for linear models. Plus, it expands to cases we don't cover in class. 
+
+Gelman posted a document containing [Tips for improving regression](https://statmodeling.stat.columbia.edu/wp-content/uploads/2020/07/raos_tips.pdf) on his blog, but I can't find the original citation. It may be from one of his own works or from someone else's. Let me know if you figure it out!
+
+## On causality, confounds, colliders, and controls
+
+Simonsohn (2019) [Interaction effects need interaction controls.](http://datacolada.org/80)
+
+Wang et al. (2020) [Using independent covariates in experimental designs: Quantifying the trade-off between power boost and Type I error inflation](readings/wang_2020.pdf)
+
+Westfall & Yarkoni (2016) [Statistically Controlling for Confounding Constructs Is Harder than You Think](https://journals.plos.org/plosone/article?id=10.1371/journal.pone.0152719)
+
+Wysocki, Lawson, & Rhemtulla (2020) [Statistical Control Requires Causal Justification](https://psyarxiv.com/j9vw4)
+
+
+

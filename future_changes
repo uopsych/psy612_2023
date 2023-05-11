@@ -1,0 +1,121 @@
+*update to quarto?
+* add shiny app for interaction power: https://david-baranger.shinyapps.io/InteractionPoweR_analytic/
+
+lectures overall
+* add 60 second break in the middle 
+* email students -- share FYP for class?
+* more in-class activities (breakout groups like simple slope drawings)
+* make a flow chart or organization for material? See example shared by S Lieber
+
+labs overall
+* show only broom and kable for creating table summaries throughout
+* in lab 9, show them papaja in depth (add links to other options, like stargazer, apaTables, and sjPlot to just create tables in Word)
+* incorporate in-text R code to summarize results throughout 
+* most useful to teach from R, not from html output
+* should we replace papaja with data cleaning (for loops, functions, regular expressions, etc)
+* integrate correlation lab with Markdown (to Word/PDF and integrating figures and IN-LINE evaluation)
+
+final-project.html
+* add descriptive statistics back in?
+
+1-correlation.html
+- trim interpretations of correlations (only effect size, remove vectors)
+- other (better?) ways of describing symmetry assumption
+
+2-correlation.html
+  
+3-regression.html
+
+* prediction is tricky -- can't predict for observation with X out of range. bad idea to use regression models to estimate changes over time. 
+
+4-regression.html
+  
+2-lab.html
+
+  * this is a bit long.
+  * wasn't able to cover stargazer/sjPlot and other formatting code
+
+5-regression.html
+
+  * move gganimate from lab 3 to here 
+
+6-glm.html
+
+  * possible terms to use for model comparison 
+    * compact model (simpler)
+    * augmented model (more complex, wanted to test)
+    * proportional reduction in R^2
+  * why is GLM taught before ANOVA?
+  
+3-lab.html
+
+  * make sure time for finishing minihacks
+  * remove matrix algebra mini hack
+  
+  * labs feeling repetitive
+    * could this be a pandemic-specific thing?
+    * options
+      * move papaja lab here?
+      * more applied lab? 
+        * here's a question -- how would you test it?
+    
+
+7-partial.html
+
+  * arrow from parent ses to peer relations
+  * when to use each: only care about X and Y and controlling for variable; comparions between diff x's and incremental validity; network analysis
+  
+8-m_regression.html
+  
+  * remove ID variable from dataset
+  * no matter where you cut the plane, the angle is the same
+  * walk through GIF -- break this up into steps and different slides. May require building my own figures
+  
+lab-4.html
+
+  * no changes needed
+
+lab-5.html
+
+  * something weird happened with data in 2022 -- check that it makes sense and maybe consider fixing to make the example make sense.
+    * shuffle groups
+
+  
+11/12-diagnostics.html
+
+  * better example for homoscedasticity (it wasn't very clear)
+  * add code for multicollinearity
+  * explain independence plots more -- give strong examples of each end (dependence, independence)
+
+lab-6.html
+
+  * this is a boring lab. How can we spice it up?
+    * murder mystery mini-hacks (something's wrong with this model)
+
+13-dag.html
+* add paper by Grosz, Rohrer, & Thoemmes (2020) "The taboo against explicit causal inference in non experimental psychology." As optional reading. Describe during class?
+* clarify "causality"
+
+homework-2.html
+* make due last week of class
+* weights are 1/predicted values, not predicted values!!!
+
+lab-8.html
+* add power and cohen's D
+* remove manual calculation of SS
+
+15-interactions.html
+* write out equations on the screen 
+
+16-18-factorial.html
+* switch order of EMM and pred in sjPlot
+
+19-interactions.html
+* blank slides
+
+20-poly-boot.html
+* keep -- when do I use this!
+
+lab-9.html
+* do NOT work from the website version of this lab. Instead, note that there is a static version on the website available for reference, but spend the entire lab opening a papaja document and working ONLY on that.
+* if too long, remove bibliography stuff (sorry Cam)

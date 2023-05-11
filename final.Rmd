@@ -1,0 +1,49 @@
+---
+title: "Final project description"
+output: 
+  html_document:
+    toc: TRUE
+    toc_depth: 2
+    toc_float: TRUE
+    theme: cosmo
+---
+
+## Description
+
+For your final project, you will analyze your own data and write a short report of the results. The goal of this assignment is to translate the skills you have learned in PSY 611 and PSY 612 into your own work as a scientist. It is also an opportunity to get feedback on your current research. This project emphasizes careful examination of data _prior to analysis_, interpretation of statistical tests, and communication of results.
+
+## Analysis
+
+Your analysis must include 
+  
+  1. appropriate descriptive statistics,
+  2. one inferential test using at least two continuous predictors[^1],
+  3. one inferential test using at least one categorical predictor[^2].
+  
+Be sure to include the statistical tests, interpretation of statistical tests, and any information on diagnostics or assumptions. 
+
+## Report format
+
+Your report should be written in Rmarkdown. You might consider using the `papaja` template, but if you have your own formatting preferences, you may use those instead. Be sure to include each of the following:
+
+  1. a brief (one paragraph maximum) description of the research design, including the measurement of variables **(5 points)**;
+  2. your research question and hypotheses **(5 points)**;
+  3. written description of the results, including APA-formatted results of statistical tests and your interpretation of those results **(30 points)**;
+  4. essential information on assumptions or diagnostics **(10 points)**;
+  5. at least one table in APA format **(5 points)**;
+  6. at least one figure, with a title and caption **(5 points)**.
+  
+Be sure to interpret any information -- statistical tests, figures, and tables -- that you provide. Please note -- this should not be a full manuscript (no introduction and discussion needed!), and you will certainly provide more information in this report regarding the analyses than you would in a traditional research article. 
+
+## I don't have data
+
+You have a couple options! 
+
+1. Use data collected by someone else in your lab. Perhaps a more senior graduate student would be willing to share their FYP data?
+2. Find an open dataset. There are lots of repositories, but a good place to start is looking at the journal _Psychological Science_. To start, go to [this link](https://journals-sagepub-com.libproxy.uoregon.edu/) and sign in with your DuckID (this will give you access off campus). Then select the Social Sciences & Humanities discipline, and navigate to _Psychological Science_ in the list. Once you've found the journal page, check the tables of contents for research articles that look interesting. The PDF version of the table of contents for a journal will include a badge indicating if the article has open data. 
+3. If you have a good idea of what variables will be in your FYP, their range and possible values, and how they may be associated, we can simulate a fake version of your dataset to work with. 
+  
+If you need any help, like finding or simulating a dataset, come talk to me (Sara W) by the end of Week 8 (February 26) to discuss options.
+
+[^1]: This model may contain additional predictors, categorical or continuous, but that is not necessary.
+[^2]: This cannot be the same as the model with two continuous predictors. You must have two different inferential models. This model may contain additional predictors, categorical or continuous, but that is not necessary.
